@@ -193,6 +193,11 @@ public abstract class Tetromino
         return false;
     }
 
+    public Block BlockType
+    {
+        get { return blockType; }
+    }
+
     protected abstract Vector2[] GetRotatedBlocksPos(int rotation);
 
     protected abstract void InitializeWallKickData();

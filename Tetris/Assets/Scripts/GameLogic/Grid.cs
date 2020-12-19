@@ -33,7 +33,34 @@ public class Grid : MonoBehaviour
         CreateGameGrid();
     }
 
+    private void CreateGameGrid()
+    {
+        Vector2 pos = position;
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < length; x++)
+            {
+                GameObject gameBlock = Instantiate(blockPrefab, pos, Quaternion.identity);
+                gameBlock.name = "Block(" + x + ", " + y + ")";
+                gameBlock.transform.localScale = new Vector3(blockSize, blockSize, 1);
+                Material material = gameBlock.GetComponent<MeshRenderer>().material;
+                material.color = noBlockColor;
+                blockDict.Add(gameBlock, material);
+                gameGrid[y, x] = gameBlock;
+
+                pos.x += blockSize + blockSpace;
+            }
+            pos.y -= blockSize + blockSpace;
+            pos.x = position.x;
+        }
+    }
+
     private void Update()
+    {
+        HandleClearRowAnimation();
+    }
+
+    private void HandleClearRowAnimation()
     {
         if (clearedRowsFading)
         {
@@ -64,26 +91,9 @@ public class Grid : MonoBehaviour
         }
     }
 
-    private void CreateGameGrid()
+    public bool ClearedRowsFading()
     {
-        Vector2 pos = position;
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < length; x++)
-            {
-                GameObject gameBlock = Instantiate(blockPrefab, pos, Quaternion.identity);
-                gameBlock.name = "Block(" + x + ", " + y + ")";
-                gameBlock.transform.localScale = new Vector3(blockSize, blockSize, 1);
-                Material material = gameBlock.GetComponent<MeshRenderer>().material;
-                material.color = noBlockColor;
-                blockDict.Add(gameBlock, material);
-                gameGrid[y, x] = gameBlock;
-
-                pos.x += blockSize + blockSpace;
-            }
-            pos.y -= blockSize + blockSpace;
-            pos.x = position.x;
-        }
+        return clearedRowsFading;
     }
 
     public int ClearFullRows()
@@ -187,8 +197,4 @@ public class Grid : MonoBehaviour
         }
     }
 
-    private void FullRowFade(int y)
-    {
-
-    }
 }

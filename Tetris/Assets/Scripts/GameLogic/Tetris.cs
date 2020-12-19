@@ -78,6 +78,12 @@ public class Tetris : MonoBehaviour
             HandleTetrominoWait();
         }
 
+        if (!tetrominoSpawned && !grid.ClearedRowsFading())
+        {
+            HandleSpawnTetromino();
+        }
+        
+
         if(currClockTime >= activeClockTime)
         {
             currClockTime = 0;
@@ -97,7 +103,6 @@ public class Tetris : MonoBehaviour
             score += scoreList[rowsCleared - 1];
             totalRowsCleared += rowsCleared;
 
-
             if (totalRowsCleared >= (level - startingLevel) * 10 + 10)
             {
                 level += 1;
@@ -107,15 +112,11 @@ public class Tetris : MonoBehaviour
                     softDropClockTime = Mathf.Min(maxSoftDropClockTime, normalClockTime * softDropClockTimeMultiplier);
                 }
             }
-            UpdateText();
 
-            tetrominoSpawned = false;
-            Invoke("HandleSpawnTetromino", grid.clearFullRowFadeTime);
+            UpdateText();
         }
-        else
-        {
-            HandleSpawnTetromino();
-        }
+
+        tetrominoSpawned = false;
     }
 
     private void HandleSpawnTetromino()
@@ -179,7 +180,6 @@ public class Tetris : MonoBehaviour
             if (!activeTetromino.CanMove(Vector2.up))
             {
                 HandleTetrominoFinished();
-                Debug.Log("TEST");
             }
             else
             {
