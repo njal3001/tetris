@@ -26,12 +26,12 @@ public class Tetris : MonoBehaviour
     public float fastMoveTime = 0.06f;
     private float currFastMoveTime;
 
-    public float totalTetrominoWaitTime = 2;
-    private float currTotalTetrominoWaitTime;
-    public float tetrominoInBetweenWaitTime = 0.5f;
-    private float currTetrominoInBetweenWaitTime;
-    private bool tetrominoWaiting;
-    private bool tetrominoWatitingFinished;
+    public float maxTetrominoLockDelay = 2;
+    private float currMaxTetrominoLockDelay;
+    public float minTetrominoLockDelay = 0.5f;
+    private float currMinTetrominoLockDelay;
+    private bool tetrominoLockDelayed;
+    private bool tetrominoLockDelayFinished;
 
     private bool tetrominoSpawned;
 
@@ -43,6 +43,16 @@ public class Tetris : MonoBehaviour
     public TextMeshProUGUI linesText;
     public TextMeshProUGUI levelText;
 
+    [Header("Tetromino Properties")]
+    public Color IColor;
+    public Color JColor;
+    public Color LColor;
+    public Color OColor;
+    public Color SColor;
+    public Color TColor;
+    public Color ZColor;
+    
+
     private bool wasMoved;
     private float prevInputX;
 
@@ -53,17 +63,15 @@ public class Tetris : MonoBehaviour
 
     private void Start()
     {
-        Tetromino I = new BoxRotationTetromino(new Vector2[] { new Vector2(0, 1), new Vector2(1, 1), new Vector2(2, 1), new Vector2(3, 1) }, 4, new Block(Color.cyan));
-        Tetromino J = new BlockRotationTetromino(new Vector2[] { new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 1), new Vector2(2, 1) }, new Vector2(1, 1), new Block(Color.blue));
-        Tetromino L = new BlockRotationTetromino(new Vector2[] { new Vector2(0, 1), new Vector2(1, 1), new Vector2(2, 1), new Vector2(2, 0) }, new Vector2(1, 1), new Block(new Color(1, 165/255, 0)));
-        Tetromino O = new BoxRotationTetromino(new Vector2[] { new Vector2(0, 0), new Vector2(1, 0), new Vector2(0, 1), new Vector2(1, 1) }, 2, new Block(Color.yellow));
-        Tetromino S = new BlockRotationTetromino(new Vector2[] { new Vector2(0, 1), new Vector2(1, 1), new Vector2(1, 0), new Vector2(2, 0) }, new Vector2(1, 1), new Block(Color.green));
-        Tetromino T = new BlockRotationTetromino(new Vector2[] { new Vector2(0, 1), new Vector2(1, 1), new Vector2(1, 0), new Vector2(2, 1) }, new Vector2(1, 1), new Block(Color.magenta));
-        Tetromino Z = new BlockRotationTetromino(new Vector2[] { new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(2, 1) }, new Vector2(1, 1), new Block(Color.red));
+        Tetromino I = new BoxRotationTetromino(new Vector2[] { new Vector2(0, 1), new Vector2(1, 1), new Vector2(2, 1), new Vector2(3, 1) }, 4, new Block(IColor));
+        Tetromino J = new BlockRotationTetromino(new Vector2[] { new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 1), new Vector2(2, 1) }, new Vector2(1, 1), new Block(JColor));
+        Tetromino L = new BlockRotationTetromino(new Vector2[] { new Vector2(0, 1), new Vector2(1, 1), new Vector2(2, 1), new Vector2(2, 0) }, new Vector2(1, 1), new Block(LColor));
+        Tetromino O = new BoxRotationTetromino(new Vector2[] { new Vector2(0, 0), new Vector2(1, 0), new Vector2(0, 1), new Vector2(1, 1) }, 2, new Block(OColor));
+        Tetromino S = new BlockRotationTetromino(new Vector2[] { new Vector2(0, 1), new Vector2(1, 1), new Vector2(1, 0), new Vector2(2, 0) }, new Vector2(1, 1), new Block(SColor));
+        Tetromino T = new BlockRotationTetromino(new Vector2[] { new Vector2(0, 1), new Vector2(1, 1), new Vector2(1, 0), new Vector2(2, 1) }, new Vector2(1, 1), new Block(TColor));
+        Tetromino Z = new BlockRotationTetromino(new Vector2[] { new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(2, 1) }, new Vector2(1, 1), new Block(ZColor));
 
         tetrominos = new List<Tetromino>{I, J, L, O, S, T, Z};
-        //tetrominos = new List<Tetromino>{I, O};
-
         Initialize();
     }
 
@@ -73,7 +81,7 @@ public class Tetris : MonoBehaviour
 
         currClockTime += Time.deltaTime;
 
-        if (tetrominoWaiting)
+        if (tetrominoLockDelayed)
         {
             HandleTetrominoWait();
         }
@@ -137,36 +145,36 @@ public class Tetris : MonoBehaviour
 
     private void HandleMoveTetrominoDown()
     {
-        if (!activeTetromino.Move(Vector2.up) && tetrominoWatitingFinished)
+        if (!activeTetromino.Move(Vector2.up) && tetrominoLockDelayFinished)
         {
             HandleTetrominoFinished();
-            tetrominoWatitingFinished = false;
+            tetrominoLockDelayFinished = false;
         }
-        else if (!activeTetromino.CanMove(Vector2.up) && !tetrominoWaiting)
+        else if (!activeTetromino.CanMove(Vector2.up) && !tetrominoLockDelayed)
         {
-            tetrominoWaiting = true;
+            tetrominoLockDelayed = true;
             wasMoved = false;
-            currTotalTetrominoWaitTime = 0;
-            currTetrominoInBetweenWaitTime = 0;
+            currMaxTetrominoLockDelay = 0;
+            currMinTetrominoLockDelay = 0;
         }
     }
 
     private void HandleTetrominoWait()
     {
-        currTotalTetrominoWaitTime += Time.deltaTime;
-        currTetrominoInBetweenWaitTime += Time.deltaTime;
+        currMaxTetrominoLockDelay += Time.deltaTime;
+        currMinTetrominoLockDelay += Time.deltaTime;
 
         bool waitOver = false;
 
-        if (currTotalTetrominoWaitTime >= totalTetrominoWaitTime)
+        if (currMaxTetrominoLockDelay >= maxTetrominoLockDelay)
         {
             waitOver = true;
         }
-        else if (currTetrominoInBetweenWaitTime >= tetrominoInBetweenWaitTime)
+        else if (currMinTetrominoLockDelay >= minTetrominoLockDelay)
         {
             if (wasMoved)
             {
-                currTetrominoInBetweenWaitTime = 0;
+                currMinTetrominoLockDelay = 0;
                 wasMoved = false;
             }
             else
@@ -183,9 +191,9 @@ public class Tetris : MonoBehaviour
             }
             else
             {
-                tetrominoWatitingFinished = true;
+                tetrominoLockDelayFinished = true;
             }
-            tetrominoWaiting = false;
+            tetrominoLockDelayed = false;
         }
     }
 
