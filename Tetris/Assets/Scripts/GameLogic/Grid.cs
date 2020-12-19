@@ -8,17 +8,15 @@ public class Grid : MonoBehaviour
     public int length;
     public int height;
     public int hiddenRows;
-    public Vector2 position;
-
     private Block[,] grid;
-    private GameObject[,] gameGrid;
-    private Dictionary<GameObject, Material> blockDict = new Dictionary<GameObject, Material>();
 
-    [Header("Block Properties")]
+    [Header("Display Properties")]
+    public Vector2 position;
     public float blockSize;
     public float blockSpace;
     public GameObject blockPrefab;
     public Color noBlockColor;
+    private GridDisplay gridDisplay;
 
     [Header("Effects")]
     public float clearFullRowFadeTime = 1;
@@ -29,30 +27,7 @@ public class Grid : MonoBehaviour
     private void Start()
     {
         grid = new Block[height + hiddenRows, length];
-        gameGrid = new GameObject[height, length];
-        CreateGameGrid();
-    }
-
-    private void CreateGameGrid()
-    {
-        Vector2 pos = position;
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < length; x++)
-            {
-                GameObject gameBlock = Instantiate(blockPrefab, pos, Quaternion.identity);
-                gameBlock.name = "Block(" + x + ", " + y + ")";
-                gameBlock.transform.localScale = new Vector3(blockSize, blockSize, 1);
-                Material material = gameBlock.GetComponent<MeshRenderer>().material;
-                material.color = noBlockColor;
-                blockDict.Add(gameBlock, material);
-                gameGrid[y, x] = gameBlock;
-
-                pos.x += blockSize + blockSpace;
-            }
-            pos.y -= blockSize + blockSpace;
-            pos.x = position.x;
-        }
+        gridDisplay = new GridDisplay(length, height, position, blockSize, blockSpace, blockPrefab, noBlockColor);
     }
 
     private void Update()
@@ -70,7 +45,7 @@ public class Grid : MonoBehaviour
                 for (int x = 0; x < length; x++)
                 {
                     Color color = Color.Lerp(Get(x, y).Color, noBlockColor, fadeProgress);
-                    UpdateGameGrid(x, y, color);
+                    gridDisplay.Set(x, y - hiddenRows, color);
                 }
             }
 
@@ -133,7 +108,6 @@ public class Grid : MonoBehaviour
         }
     }
 
-
     public bool InBounds(Vector2 pos) 
     {
         int x = (int)pos.x;
@@ -165,8 +139,11 @@ public class Grid : MonoBehaviour
     {
         grid[y, x] = block;
 
-        Color color = block == null ? noBlockColor : block.Color;
-        UpdateGameGrid(x, y, color);
+        if (y >= hiddenRows)
+        {
+            Color color = block == null ? noBlockColor : block.Color;
+            gridDisplay.Set(x, y - hiddenRows, color);
+        }
     }
 
     public void Set(Vector2 pos, Block block)
@@ -187,14 +164,4 @@ public class Grid : MonoBehaviour
             }
         }
     }
-
-    //Accounts for the hidden rows offset
-    private void UpdateGameGrid(int x, int y, Color color)
-    {
-        if (y >= hiddenRows)
-        {
-            blockDict[gameGrid[y - hiddenRows, x]].color = color;
-        }
-    }
-
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class Tetris : MonoBehaviour
 {
     public Grid grid;
-    public Grid nextTetrominoGrid;
+    public NextTetrominoDisplay nextTetrominoDisplay;
 
     [Header("Level Properties")]
     public float[] levelClockTime = new float[] { 48/61f, 43/61f, 38/61f, 33/61f, 28/61f, 23/61f, 18/61f, 13/61f, 8/61f, 6/61f, 5/61f, 5/61f, 5/61f, 4/61f, 4/61f, 4/61f, 3/61f, 3/61f, 3/61f,
@@ -139,8 +139,7 @@ public class Tetris : MonoBehaviour
     private void UpdateNextTetromino()
     {
         nextTetromino = GetNextTetromino();
-        nextTetrominoGrid.Clear();
-        nextTetromino.Spawn(new Vector2(0, 0), nextTetrominoGrid);
+        nextTetrominoDisplay.Display(nextTetromino);
     }
 
     private void HandleMoveTetrominoDown()

@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Camera))]
+[RequireComponent(typeof(UnityEngine.Camera))]
 public class Camera : MonoBehaviour
 {
     public Grid grid;
     private UnityEngine.Camera camera;
 
-    void Start()
+    private void Awake()
     {
         camera = GetComponent<UnityEngine.Camera>();
 
