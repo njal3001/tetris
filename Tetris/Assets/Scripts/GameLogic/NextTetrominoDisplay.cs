@@ -14,7 +14,7 @@ public class NextTetrominoDisplay : MonoBehaviour
         float posX = camera.transform.position.x + camera.orthographicSize;
         float posY = camera.transform.position.y;
 
-        display = new GridDisplay(4, 2, new Vector2(posX, posY), grid.blockSize, grid.blockSpace, grid.blockPrefab, Color.white);
+        display = new GridDisplay(4, 2, new Vector2(posX, posY), grid.blockSize, grid.outlinePercent, grid.blockPrefab, Color.white, transform);
     }
 
     public void Display(Tetromino tetromino)

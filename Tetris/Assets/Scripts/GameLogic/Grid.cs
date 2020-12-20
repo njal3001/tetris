@@ -13,7 +13,7 @@ public class Grid : MonoBehaviour
     [Header("Display Properties")]
     public Vector2 position;
     public float blockSize;
-    public float blockSpace;
+    public float outlinePercent;
     public GameObject blockPrefab;
     public Color noBlockColor;
     private GridDisplay gridDisplay;
@@ -24,10 +24,10 @@ public class Grid : MonoBehaviour
     private List<int> clearedRowsY = new List<int>();
     private float fadeProgress;
 
-    private void Start()
+    public void Start()
     {
         grid = new Block[height + hiddenRows, length];
-        gridDisplay = new GridDisplay(length, height, position, blockSize, blockSpace, blockPrefab, noBlockColor);
+        gridDisplay = new GridDisplay(length, height, position, blockSize, outlinePercent, blockPrefab, noBlockColor, transform);
     }
 
     private void Update()

@@ -450,7 +450,7 @@ MonoBehaviour:
   hiddenRows: 2
   position: {x: 0, y: 0}
   blockSize: 1
-  blockSpace: 0.25
+  outlinePercent: 0.9
   blockPrefab: {fileID: 3471058504443052739, guid: 5adbeb1e424c92e4c891e1ad3d21dc20,
     type: 3}
   noBlockColor: {r: 1, g: 1, b: 1, a: 1}
