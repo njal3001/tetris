@@ -86,7 +86,7 @@ public class Tetris : MonoBehaviour
             HandleTetrominoWait();
         }
 
-        if (!tetrominoSpawned && !grid.ClearedRowsFading())
+        if (!tetrominoSpawned && !grid.ClearRowsEffectPlaying())
         {
             HandleSpawnTetromino();
         }
@@ -198,6 +198,8 @@ public class Tetris : MonoBehaviour
 
     private void HandleTetrominoFinished()
     {
+        grid.audioManager.Play("tetrominoLock");
+
         if (activeTetromino.OutOfSight())
         {
             HandleGameOver();

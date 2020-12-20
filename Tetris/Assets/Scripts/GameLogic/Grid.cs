@@ -19,10 +19,14 @@ public class Grid : MonoBehaviour
     private GridDisplay gridDisplay;
 
     [Header("Effects")]
-    public float clearFullRowFadeTime = 1;
-    private bool clearedRowsFading;
-    private List<int> clearedRowsY = new List<int>();
-    private float fadeProgress;
+    public AudioManager audioManager;
+    public float clearRowEffectTime = 1;
+    private bool clearRowsEffectPlaying;
+    private List<int> clearedRowsY;
+    private int clearBlockLeftXPos;
+    private int clearBlockRightXPos;
+    private float timeToNextClearBlock;
+    private float currTimeToNextClearBlock;
 
     public void Start()
     {
@@ -30,26 +34,46 @@ public class Grid : MonoBehaviour
         gridDisplay = new GridDisplay(length, height, position, blockSize, outlinePercent, blockPrefab, noBlockColor, transform);
     }
 
-    private void Update()
+    public void StartClearedRowsEffect()
     {
-        HandleClearRowAnimation();
+        clearRowsEffectPlaying = true;
+
+        timeToNextClearBlock = clearRowEffectTime / Mathf.Floor((length / 2f));
+
+        if (length % 2 == 0)
+        {
+            clearBlockLeftXPos = (length / 2) - 1;
+            clearBlockRightXPos = clearBlockLeftXPos + 1;
+        }
+        else
+        {
+            clearBlockLeftXPos = clearBlockRightXPos = length / 2;
+        }
+
+        audioManager.Play("rowClear");
     }
 
-    private void HandleClearRowAnimation()
+    public bool ClearRowsEffectPlaying()
     {
-        if (clearedRowsFading)
+        return clearRowsEffectPlaying;
+    }
+
+    private void Update()
+    {
+        currTimeToNextClearBlock += Time.deltaTime;
+        if (clearRowsEffectPlaying && currTimeToNextClearBlock >= timeToNextClearBlock)
         {
-            fadeProgress += Time.deltaTime / clearFullRowFadeTime;
+            currTimeToNextClearBlock = 0;
             foreach (int y in clearedRowsY)
             {
-                for (int x = 0; x < length; x++)
-                {
-                    Color color = Color.Lerp(Get(x, y).Color, noBlockColor, fadeProgress);
-                    gridDisplay.Set(x, y - hiddenRows, color);
-                }
+                Set(clearBlockLeftXPos, y, null);
+                Set(clearBlockRightXPos, y, null);
             }
 
-            if (fadeProgress >= 1)
+            clearBlockLeftXPos--;
+            clearBlockRightXPos++;
+
+            if (clearBlockLeftXPos < 0)
             {
                 foreach (int y in clearedRowsY)
                 {
@@ -59,20 +83,15 @@ public class Grid : MonoBehaviour
                     }
                 }
 
-                fadeProgress = 0;
-                clearedRowsFading = false;
-                clearedRowsY.Clear();
+                clearRowsEffectPlaying = false;
             }
         }
     }
 
-    public bool ClearedRowsFading()
-    {
-        return clearedRowsFading;
-    }
-
     public int ClearFullRows()
     {
+        clearedRowsY = new List<int>();
+
         for (int y = hiddenRows; y < height + hiddenRows; y++)
         {
             bool clearRow = true;
@@ -93,7 +112,7 @@ public class Grid : MonoBehaviour
 
         if (clearedRowsY.Count > 0)
         {
-            clearedRowsFading = true;
+            StartClearedRowsEffect();
         }
         return clearedRowsY.Count;
     }

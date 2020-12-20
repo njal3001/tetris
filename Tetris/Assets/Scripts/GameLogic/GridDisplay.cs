@@ -39,4 +39,5 @@ public class GridDisplay : MonoBehaviour
     {
         blockDict[gridDisplay[y, x]].color = color;
     }
+
 }
