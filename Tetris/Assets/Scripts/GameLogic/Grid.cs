@@ -15,8 +15,8 @@ public class Grid : MonoBehaviour
     public float blockSize;
     public float outlinePercent;
     public GameObject blockPrefab;
-    public Color noBlockColor;
-    private GridDisplay gridDisplay;
+    public Sprite noBlockSprite;
+    public GridDisplay gridDisplay;
 
     [Header("Effects")]
     public AudioManager audioManager;
@@ -31,7 +31,7 @@ public class Grid : MonoBehaviour
     public void Start()
     {
         grid = new Block[height + hiddenRows, length];
-        gridDisplay = new GridDisplay(length, height, position, blockSize, outlinePercent, blockPrefab, noBlockColor, transform);
+        gridDisplay.Create(length, height, position, blockSize, outlinePercent, blockPrefab, noBlockSprite, transform);
     }
 
     public void StartClearedRowsEffect()
@@ -160,8 +160,8 @@ public class Grid : MonoBehaviour
 
         if (y >= hiddenRows)
         {
-            Color color = block == null ? noBlockColor : block.Color;
-            gridDisplay.Set(x, y - hiddenRows, color);
+            Sprite sprite= block == null ? noBlockSprite : block.Sprite;
+            gridDisplay.SetSprite(x, y - hiddenRows, sprite);
         }
     }
 

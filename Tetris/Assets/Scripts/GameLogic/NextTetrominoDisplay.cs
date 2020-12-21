@@ -5,16 +5,17 @@ using UnityEngine;
 public class NextTetrominoDisplay : MonoBehaviour
 {
     public Grid grid;
-    public UnityEngine.Camera camera;
+    public GridDisplay display;
 
-    private GridDisplay display;
+    public UnityEngine.Camera cam;
+
 
     public void Start()
     {
-        float posX = camera.transform.position.x + camera.orthographicSize;
-        float posY = camera.transform.position.y;
+        float posX = cam.transform.position.x + cam.orthographicSize;
+        float posY = cam.transform.position.y;
 
-        display = new GridDisplay(4, 2, new Vector2(posX, posY), grid.blockSize, grid.outlinePercent, grid.blockPrefab, Color.white, transform);
+        display.Create(4, 2, new Vector2(posX, posY), grid.blockSize, grid.outlinePercent, grid.blockPrefab, grid.noBlockSprite, transform);
     }
 
     public void Display(Tetromino tetromino)
@@ -23,13 +24,13 @@ public class NextTetrominoDisplay : MonoBehaviour
         {
             for (int x = 0; x < 4; x++)
             {
-                display.Set(x, y, camera.backgroundColor);
+                display.SetSprite(x, y, grid.noBlockSprite);
             }
         }
 
         foreach (Vector2 pos in tetromino.BlocksPos)
         {
-            display.Set((int)pos.x, (int)pos.y, tetromino.BlockType.Color);
+            display.SetSprite((int)pos.x, (int)pos.y, tetromino.BlockType.Sprite);
         }
     }
 

@@ -5,9 +5,9 @@ using UnityEngine;
 public class GridDisplay : MonoBehaviour
 {
     private GameObject[,] gridDisplay;
-    private Dictionary<GameObject, Material> blockDict = new Dictionary<GameObject, Material>();
+    private Dictionary<GameObject, SpriteRenderer> blockDict = new Dictionary<GameObject, SpriteRenderer>();
 
-    public GridDisplay(int length, int height, Vector2 position, float blockSize, float outlinePercent, GameObject blockPrefab, Color noBlockColor, Transform blocksParent)
+    public void Create(int length, int height, Vector2 position, float blockSize, float outlinePercent, GameObject blockPrefab, Sprite noBlockSprite, Transform blocksParent)
     {
         gridDisplay = new GameObject[height, length];
 
@@ -22,10 +22,15 @@ public class GridDisplay : MonoBehaviour
                 GameObject gameBlock = Instantiate(blockPrefab, currPos, Quaternion.identity);
                 gameBlock.transform.parent = blocks.transform;
                 gameBlock.name = "Block(" + x + ", " + y + ")";
-                gameBlock.transform.localScale = new Vector3(blockSize * outlinePercent, blockSize * outlinePercent, 1);
-                Material material = gameBlock.GetComponent<Renderer>().material;
-                material.color = noBlockColor;
-                blockDict.Add(gameBlock, material);
+
+                SpriteRenderer spriteRenderer = gameBlock.GetComponent<SpriteRenderer>();
+                spriteRenderer.sprite = noBlockSprite;
+                blockDict.Add(gameBlock, spriteRenderer);
+
+                float spriteSize = spriteRenderer.bounds.size.x;
+                float size = (blockSize * outlinePercent) / spriteSize;
+                gameBlock.transform.localScale = new Vector3(size, size, 1);
+                Debug.Log(spriteRenderer.bounds.size);
                 gridDisplay[y, x] = gameBlock;
 
                 currPos.x += blockSize;
@@ -35,9 +40,15 @@ public class GridDisplay : MonoBehaviour
         }
     }
 
-    public void Set(int x, int y, Color color)
+    public void SetSprite(int x, int y, Sprite sprite)
     {
-        blockDict[gridDisplay[y, x]].color = color;
+        blockDict[gridDisplay[y, x]].sprite = sprite;
+    }
+
+    public void SetAlpha(int x, int y, float alpha)
+    {
+        Color color = blockDict[gridDisplay[y, x]].color;
+        blockDict[gridDisplay[y, x]].color = new Color(color.r, color.g, color.b, alpha);
     }
 
 }

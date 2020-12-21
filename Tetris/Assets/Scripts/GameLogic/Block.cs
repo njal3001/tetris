@@ -3,16 +3,14 @@
 public class Block
 {
 
-    private Color color;
-
-    public Block(Color color)
+    public Block(Sprite sprite)
     {
-        this.color = color;
+        Sprite = sprite;
     }
 
-    public Color Color
+    public Sprite Sprite
     {
-        get { return color; }
-        set { color = value; }
+        get;
+        set;
     }
 }

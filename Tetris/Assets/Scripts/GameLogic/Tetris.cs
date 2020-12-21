@@ -44,13 +44,13 @@ public class Tetris : MonoBehaviour
     public TextMeshProUGUI levelText;
 
     [Header("Tetromino Properties")]
-    public Color IColor;
-    public Color JColor;
-    public Color LColor;
-    public Color OColor;
-    public Color SColor;
-    public Color TColor;
-    public Color ZColor;
+    public Sprite IBlockSprite;
+    public Sprite JBlockSprite;
+    public Sprite LBlockSprite;
+    public Sprite OBlockSprite;
+    public Sprite SBlockSprite;
+    public Sprite TBlockSprite;
+    public Sprite ZBlockSprite;
     
 
     private bool wasMoved;
@@ -63,13 +63,13 @@ public class Tetris : MonoBehaviour
 
     private void Start()
     {
-        Tetromino I = new BoxRotationTetromino(new Vector2[] { new Vector2(0, 1), new Vector2(1, 1), new Vector2(2, 1), new Vector2(3, 1) }, 4, new Block(IColor));
-        Tetromino J = new BlockRotationTetromino(new Vector2[] { new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 1), new Vector2(2, 1) }, new Vector2(1, 1), new Block(JColor));
-        Tetromino L = new BlockRotationTetromino(new Vector2[] { new Vector2(0, 1), new Vector2(1, 1), new Vector2(2, 1), new Vector2(2, 0) }, new Vector2(1, 1), new Block(LColor));
-        Tetromino O = new BoxRotationTetromino(new Vector2[] { new Vector2(0, 0), new Vector2(1, 0), new Vector2(0, 1), new Vector2(1, 1) }, 2, new Block(OColor));
-        Tetromino S = new BlockRotationTetromino(new Vector2[] { new Vector2(0, 1), new Vector2(1, 1), new Vector2(1, 0), new Vector2(2, 0) }, new Vector2(1, 1), new Block(SColor));
-        Tetromino T = new BlockRotationTetromino(new Vector2[] { new Vector2(0, 1), new Vector2(1, 1), new Vector2(1, 0), new Vector2(2, 1) }, new Vector2(1, 1), new Block(TColor));
-        Tetromino Z = new BlockRotationTetromino(new Vector2[] { new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(2, 1) }, new Vector2(1, 1), new Block(ZColor));
+        Tetromino I = new BoxRotationTetromino(new Vector2[] { new Vector2(0, 1), new Vector2(1, 1), new Vector2(2, 1), new Vector2(3, 1) }, 4, new Block(IBlockSprite));
+        Tetromino J = new BlockRotationTetromino(new Vector2[] { new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 1), new Vector2(2, 1) }, new Vector2(1, 1), new Block(JBlockSprite));
+        Tetromino L = new BlockRotationTetromino(new Vector2[] { new Vector2(0, 1), new Vector2(1, 1), new Vector2(2, 1), new Vector2(2, 0) }, new Vector2(1, 1), new Block(LBlockSprite));
+        Tetromino O = new BoxRotationTetromino(new Vector2[] { new Vector2(0, 0), new Vector2(1, 0), new Vector2(0, 1), new Vector2(1, 1) }, 2, new Block(OBlockSprite));
+        Tetromino S = new BlockRotationTetromino(new Vector2[] { new Vector2(0, 1), new Vector2(1, 1), new Vector2(1, 0), new Vector2(2, 0) }, new Vector2(1, 1), new Block(SBlockSprite));
+        Tetromino T = new BlockRotationTetromino(new Vector2[] { new Vector2(0, 1), new Vector2(1, 1), new Vector2(1, 0), new Vector2(2, 1) }, new Vector2(1, 1), new Block(TBlockSprite));
+        Tetromino Z = new BlockRotationTetromino(new Vector2[] { new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(2, 1) }, new Vector2(1, 1), new Block(ZBlockSprite));
 
         tetrominos = new List<Tetromino>{I, J, L, O, S, T, Z};
         Initialize();

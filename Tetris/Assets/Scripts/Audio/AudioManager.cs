@@ -6,7 +6,6 @@ public class AudioManager : MonoBehaviour
 {
     public Sound[] sounds;
 
-
     private void Awake()
     {
         foreach (Sound sound in sounds)
@@ -23,6 +22,13 @@ public class AudioManager : MonoBehaviour
     public void Play(string name)
     {
         Sound sound = Array.Find(sounds, s => s.name == name);
+
+        if (sound == null)
+        {
+            Debug.LogWarning("Sound: " + name + " not found");
+            return;
+        }
+
         sound.AudioSource.Play();
     }
 

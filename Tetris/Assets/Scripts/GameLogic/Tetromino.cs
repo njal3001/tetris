@@ -9,6 +9,7 @@ public abstract class Tetromino
     private Grid grid;
 
     private Vector2[] currBlocksPos;
+    private int ghostDist;
     private Vector2 relativeOrigin;
     private int rotation;   
     protected Vector2[,][] wallKickData = new Vector2[4,4][];
@@ -163,6 +164,30 @@ public abstract class Tetromino
             Move(new Vector2(0, dist));
         }
     }
+
+    private void DrawGhost()
+    {
+
+        int dist = 1;
+        while (CanMove(new Vector2(0, dist)))
+        {
+            dist++;
+        }
+
+        dist--;
+        if (dist > 0)
+        {
+            Move(new Vector2(0, dist));
+        }
+
+    }
+
+    private void EraseGhost()
+    {
+
+    }
+
+
 
     //Converts the local block positions to their position in the grid
     private Vector2[] ToGridPos(Vector2[] blocksPos, Vector2 relativeOrigin)

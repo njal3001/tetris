@@ -279,6 +279,7 @@ GameObject:
   m_Component:
   - component: {fileID: 218262099}
   - component: {fileID: 218262098}
+  - component: {fileID: 218262100}
   m_Layer: 0
   m_Name: NextTetrominoDisplay
   m_TagString: Untagged
@@ -299,7 +300,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grid: {fileID: 316357890}
-  camera: {fileID: 519420031}
+  display: {fileID: 218262100}
+  cam: {fileID: 519420031}
 --- !u!4 &218262099
 Transform:
   m_ObjectHideFlags: 0
@@ -314,6 +316,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &218262100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 218262097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab53af6e256438a4a99f17803f393b88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &225527402
 GameObject:
   m_ObjectHideFlags: 0
@@ -379,8 +393,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -480,6 +494,7 @@ GameObject:
   m_Component:
   - component: {fileID: 316357891}
   - component: {fileID: 316357890}
+  - component: {fileID: 316357892}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -507,7 +522,8 @@ MonoBehaviour:
   outlinePercent: 0.9
   blockPrefab: {fileID: 3471058504443052739, guid: 5adbeb1e424c92e4c891e1ad3d21dc20,
     type: 3}
-  noBlockColor: {r: 0, g: 0, b: 0, a: 1}
+  noBlockSprite: {fileID: 21300000, guid: cfc115b9002b97d4cb0aa27c42319476, type: 3}
+  gridDisplay: {fileID: 316357892}
   audioManager: {fileID: 142528059}
   clearRowEffectTime: 0.3
 --- !u!4 &316357891
@@ -524,6 +540,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &316357892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 316357889}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab53af6e256438a4a99f17803f393b88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &466148026
 GameObject:
   m_ObjectHideFlags: 0
@@ -589,8 +617,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -730,7 +758,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_projectionMatrixMode: 1
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
@@ -841,8 +869,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -997,8 +1025,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1165,13 +1193,13 @@ MonoBehaviour:
   scoreText: {fileID: 611960438}
   linesText: {fileID: 699679480}
   levelText: {fileID: 466148028}
-  IColor: {r: 0, g: 1, b: 0.9532709, a: 1}
-  JColor: {r: 0, g: 0.023376942, b: 1, a: 1}
-  LColor: {r: 1, g: 0.63512623, b: 0, a: 1}
-  OColor: {r: 1, g: 0.96840537, b: 0, a: 1}
-  SColor: {r: 0.21313202, g: 1, b: 0, a: 1}
-  TColor: {r: 0.81585217, g: 0, b: 1, a: 1}
-  ZColor: {r: 1, g: 0, b: 0.03096056, a: 1}
+  IBlockSprite: {fileID: 21300000, guid: 767fe77252868ee4e934c7e392b16f8a, type: 3}
+  JBlockSprite: {fileID: 21300000, guid: e61a2e1f5a8f3fa4f9d3e163cdc63981, type: 3}
+  LBlockSprite: {fileID: 21300000, guid: a4e42a1cf21026f47b3f3a92e5f1060f, type: 3}
+  OBlockSprite: {fileID: 21300000, guid: b691a96630cfe4044ba828d2180f95f5, type: 3}
+  SBlockSprite: {fileID: 21300000, guid: acc1c115dfe3a274d9fe292f96928d88, type: 3}
+  TBlockSprite: {fileID: 21300000, guid: 471920237c698bd4c812483ccb805226, type: 3}
+  ZBlockSprite: {fileID: 21300000, guid: 5e80dc8665de899448170aed6593b342, type: 3}
 --- !u!4 &1092619340
 Transform:
   m_ObjectHideFlags: 0
