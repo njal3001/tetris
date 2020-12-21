@@ -6,6 +6,7 @@ public class NextTetrominoDisplay : MonoBehaviour
 {
     public Grid grid;
     public GridDisplay display;
+    public Sprite whiteSprite;  
 
     public UnityEngine.Camera cam;
 
@@ -15,22 +16,32 @@ public class NextTetrominoDisplay : MonoBehaviour
         float posX = cam.transform.position.x + cam.orthographicSize;
         float posY = cam.transform.position.y;
 
-        display.Create(4, 2, new Vector2(posX, posY), grid.blockSize, grid.outlinePercent, grid.blockPrefab, grid.noBlockSprite, transform);
+        display.Create(4, 2, new Vector2(posX, posY), grid.blockSize, grid.outlinePercent, grid.blockPrefab, whiteSprite, transform);
+        Clear();
     }
 
-    public void Display(Tetromino tetromino)
+    private void Clear()
     {
         for (int y = 0; y < 2; y++)
         {
             for (int x = 0; x < 4; x++)
             {
-                display.SetSprite(x, y, grid.noBlockSprite);
+                display.SetSprite(x, y, whiteSprite);
+                display.SetColor(x, y, cam.backgroundColor);
             }
         }
+    }
+
+    public void Display(Tetromino tetromino)
+    {
+        Clear();
 
         foreach (Vector2 pos in tetromino.BlocksPos)
         {
-            display.SetSprite((int)pos.x, (int)pos.y, tetromino.BlockType.Sprite);
+            int x = (int)pos.x;
+            int y = (int)pos.y;
+            display.SetSprite(x, y, tetromino.BlockType.Sprite);
+            display.SetColor(x, y, Color.white);
         }
     }
 

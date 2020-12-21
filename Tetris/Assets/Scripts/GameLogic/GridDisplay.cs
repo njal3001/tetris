@@ -21,8 +21,8 @@ public class GridDisplay : MonoBehaviour
             {
                 GameObject gameBlock = Instantiate(blockPrefab, currPos, Quaternion.identity);
                 gameBlock.transform.parent = blocks.transform;
-                gameBlock.name = "Block(" + x + ", " + y + ")";
 
+                gameBlock.name = "Block(" + x + ", " + y + ")";
                 SpriteRenderer spriteRenderer = gameBlock.GetComponent<SpriteRenderer>();
                 spriteRenderer.sprite = noBlockSprite;
                 blockDict.Add(gameBlock, spriteRenderer);
@@ -31,6 +31,11 @@ public class GridDisplay : MonoBehaviour
                 float size = (blockSize * outlinePercent) / spriteSize;
                 gameBlock.transform.localScale = new Vector3(size, size, 1);
                 gridDisplay[y, x] = gameBlock;
+
+                GameObject backgroundBlock = Instantiate(blockPrefab, new Vector3(currPos.x, currPos.y, 1), Quaternion.identity);
+                backgroundBlock.GetComponent<SpriteRenderer>().sprite = noBlockSprite;
+                backgroundBlock.transform.localScale = new Vector3(size, size, 1);
+                backgroundBlock.transform.parent = gameBlock.transform;
 
                 currPos.x += blockSize;
             }
@@ -48,5 +53,10 @@ public class GridDisplay : MonoBehaviour
     {
         Color color = blockDict[gridDisplay[y, x]].color;
         blockDict[gridDisplay[y, x]].color = new Color(color.r, color.g, color.b, alpha);
+    }
+
+    public void SetColor(int x, int y, Color color)
+    {
+        blockDict[gridDisplay[y, x]].color = color;
     }
 }
