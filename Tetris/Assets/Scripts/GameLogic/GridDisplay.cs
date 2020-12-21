@@ -30,7 +30,6 @@ public class GridDisplay : MonoBehaviour
                 float spriteSize = spriteRenderer.bounds.size.x;
                 float size = (blockSize * outlinePercent) / spriteSize;
                 gameBlock.transform.localScale = new Vector3(size, size, 1);
-                Debug.Log(spriteRenderer.bounds.size);
                 gridDisplay[y, x] = gameBlock;
 
                 currPos.x += blockSize;
@@ -50,5 +49,4 @@ public class GridDisplay : MonoBehaviour
         Color color = blockDict[gridDisplay[y, x]].color;
         blockDict[gridDisplay[y, x]].color = new Color(color.r, color.g, color.b, alpha);
     }
-
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -9,10 +10,11 @@ public abstract class Tetromino
     private Grid grid;
 
     private Vector2[] currBlocksPos;
-    private int ghostDist;
     private Vector2 relativeOrigin;
     private int rotation;   
     protected Vector2[,][] wallKickData = new Vector2[4,4][];
+
+    private List<Vector2> oldGhostBlocksPos;
 
     public Tetromino(Vector2[] blocksPos, Block blockType)
     {
@@ -47,6 +49,10 @@ public abstract class Tetromino
         this.relativeOrigin = relativeOrigin;
         currBlocksPos = blocksPos;
         rotation = 0;
+
+        oldGhostBlocksPos = new List<Vector2>();
+        DrawGhost();
+
         return true;
     }
 
@@ -79,6 +85,8 @@ public abstract class Tetromino
         }
 
         relativeOrigin += moveAmount;
+        DrawGhost();
+
         return true;
     }
 
@@ -144,6 +152,8 @@ public abstract class Tetromino
             currBlocksPos = rotatedBlocksPos;
             rotation = newRotation;
             relativeOrigin += kick;
+            DrawGhost();
+
             return true;
         }
 
@@ -152,42 +162,59 @@ public abstract class Tetromino
 
     public void HardDrop()
     {
-        int dist = 1;
-        while(CanMove(new Vector2(0, dist))) 
-        {
-            dist++;
-        }
+        int dist = HardDropDistance();
 
-        dist--;
         if (dist > 0)
         {
             Move(new Vector2(0, dist));
         }
     }
 
-    private void DrawGhost()
+    public int HardDropDistance()
     {
-
         int dist = 1;
         while (CanMove(new Vector2(0, dist)))
         {
             dist++;
         }
 
-        dist--;
-        if (dist > 0)
+        return dist - 1;
+    }
+
+    private void DrawGhost()
+    {
+        //Clearing old ghost
+        foreach (Vector2 oldPos in oldGhostBlocksPos)
         {
-            Move(new Vector2(0, dist));
+            if (!ToGridPos(currBlocksPos).Contains(oldPos))
+            {
+                int x = (int)oldPos.x;
+                int y = (int)oldPos.y - grid.hiddenRows;
+                grid.gridDisplay.SetSprite(x, y, grid.noBlockSprite);
+                grid.gridDisplay.SetAlpha(x, y, 1);
+            }
         }
 
+        //Drawing new ghost
+        int dist = HardDropDistance();
+        if (dist == 0) return;
+
+        Vector2[] currGridBlocksPos = ToGridPos(currBlocksPos);
+        foreach (Vector2 currPos in currGridBlocksPos)
+        {
+            Vector2 ghostPos = currPos + new Vector2(0, dist);
+
+            if (!currGridBlocksPos.Contains(ghostPos))
+            {
+                int x = (int)ghostPos.x;
+                int y = (int)ghostPos.y - grid.hiddenRows;
+                grid.gridDisplay.SetSprite(x, y, blockType.Sprite);
+                grid.gridDisplay.SetAlpha(x, y, grid.ghostBlockAlpha);
+
+                oldGhostBlocksPos.Add(ghostPos);
+            }
+        }
     }
-
-    private void EraseGhost()
-    {
-
-    }
-
-
 
     //Converts the local block positions to their position in the grid
     private Vector2[] ToGridPos(Vector2[] blocksPos, Vector2 relativeOrigin)

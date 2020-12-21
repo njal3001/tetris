@@ -16,6 +16,7 @@ public class Grid : MonoBehaviour
     public float outlinePercent;
     public GameObject blockPrefab;
     public Sprite noBlockSprite;
+    public float ghostBlockAlpha;
     public GridDisplay gridDisplay;
 
     [Header("Effects")]
@@ -162,6 +163,7 @@ public class Grid : MonoBehaviour
         {
             Sprite sprite= block == null ? noBlockSprite : block.Sprite;
             gridDisplay.SetSprite(x, y - hiddenRows, sprite);
+            gridDisplay.SetAlpha(x, y - hiddenRows, 1f);
         }
     }
 

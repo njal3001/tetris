@@ -2,7 +2,6 @@
 
 public class Block
 {
-
     public Block(Sprite sprite)
     {
         Sprite = sprite;
@@ -13,4 +12,5 @@ public class Block
         get;
         set;
     }
+
 }

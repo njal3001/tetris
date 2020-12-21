@@ -519,10 +519,11 @@ MonoBehaviour:
   hiddenRows: 2
   position: {x: 0, y: 0}
   blockSize: 1
-  outlinePercent: 0.9
+  outlinePercent: 0.95
   blockPrefab: {fileID: 3471058504443052739, guid: 5adbeb1e424c92e4c891e1ad3d21dc20,
     type: 3}
   noBlockSprite: {fileID: 21300000, guid: cfc115b9002b97d4cb0aa27c42319476, type: 3}
+  ghostBlockAlpha: 0.3
   gridDisplay: {fileID: 316357892}
   audioManager: {fileID: 142528059}
   clearRowEffectTime: 0.3
@@ -784,7 +785,7 @@ Camera:
   m_TargetDisplay: 0
   m_TargetEye: 0
   m_HDR: 1
-  m_AllowMSAA: 0
+  m_AllowMSAA: 1
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 0

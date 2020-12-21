@@ -6,18 +6,18 @@ using UnityEngine;
 public class Camera : MonoBehaviour
 {
     public Grid grid;
-    private UnityEngine.Camera camera;
+    private UnityEngine.Camera cam;
 
     private void Awake()
     {
-        camera = GetComponent<UnityEngine.Camera>();
+        cam = GetComponent<UnityEngine.Camera>();
 
         float size = grid.height * grid.blockSize;
-        camera.orthographicSize = size / 2 + size / 10;
+        cam.orthographicSize = size / 2 + size / 10;
 
         float xPos = grid.position.x + ((grid.length - 1) * grid.blockSize) / 2;
         float yPos = grid.position.y + grid.blockSize/2 - size/2;
 
-        camera.transform.position = new Vector3(xPos, yPos, transform.position.z);
+        cam.transform.position = new Vector3(xPos, yPos, transform.position.z);
     }
 }
