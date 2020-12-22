@@ -32,6 +32,11 @@ public class Grid : MonoBehaviour
     public void Start()
     {
         grid = new Block[height + hiddenRows, length];
+        CreateDisplay();
+    }
+
+    public void CreateDisplay()
+    {
         gridDisplay.Create(length, height, position, blockSize, outlinePercent, blockPrefab, noBlockSprite, transform);
     }
 

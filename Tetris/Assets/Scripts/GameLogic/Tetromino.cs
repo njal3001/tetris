@@ -188,10 +188,7 @@ public abstract class Tetromino
         {
             if (!ToGridPos(currBlocksPos).Contains(oldPos))
             {
-                int x = (int)oldPos.x;
-                int y = (int)oldPos.y - grid.hiddenRows;
-                grid.gridDisplay.SetSprite(x, y, grid.noBlockSprite);
-                grid.gridDisplay.SetAlpha(x, y, 1);
+                UpdateGhostBlock(oldPos, grid.noBlockSprite, 1);
             }
         }
 
@@ -206,13 +203,32 @@ public abstract class Tetromino
 
             if (!currGridBlocksPos.Contains(ghostPos))
             {
-                int x = (int)ghostPos.x;
-                int y = (int)ghostPos.y - grid.hiddenRows;
-                grid.gridDisplay.SetSprite(x, y, blockType.Sprite);
-                grid.gridDisplay.SetAlpha(x, y, grid.ghostBlockAlpha);
-
+                UpdateGhostBlock(ghostPos, blockType.Sprite, grid.ghostBlockAlpha);
                 oldGhostBlocksPos.Add(ghostPos);
             }
+        }
+    }
+
+    private void UpdateGhostBlock(Vector2 ghostPos, Sprite sprite, float alpha)
+    {
+        int x = (int)ghostPos.x;
+        int y = (int)ghostPos.y - grid.hiddenRows;
+        grid.gridDisplay.SetSprite(x, y, sprite);
+        grid.gridDisplay.SetAlpha(x, y, alpha);
+    }
+
+    public void Clear()
+    {
+        //Clears tetromino blocks from grid
+        foreach (Vector2 pos in ToGridPos(currBlocksPos))
+        {
+            grid.Set(pos, null);
+        }
+
+        //Clears ghost
+        foreach (Vector2 ghostPos in oldGhostBlocksPos)
+        {
+            UpdateGhostBlock(ghostPos, grid.noBlockSprite, 1);
         }
     }
 

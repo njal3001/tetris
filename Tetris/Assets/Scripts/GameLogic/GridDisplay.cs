@@ -11,6 +11,12 @@ public class GridDisplay : MonoBehaviour
     {
         gridDisplay = new GameObject[height, length];
 
+        Transform oldBlocks = blocksParent.Find("Blocks");
+        if (oldBlocks != null)
+        {
+            DestroyImmediate(oldBlocks.gameObject);
+        }
+
         Transform blocks = (new GameObject("Blocks")).transform;
         blocks.parent = blocksParent;
 

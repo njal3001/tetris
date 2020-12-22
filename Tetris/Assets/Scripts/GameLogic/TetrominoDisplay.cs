@@ -2,25 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NextTetrominoDisplay : MonoBehaviour
+public class TetrominoDisplay : MonoBehaviour
 {
     public Grid grid;
     public GridDisplay display;
-    public Sprite whiteSprite;  
+    public Sprite whiteSprite;
 
     public UnityEngine.Camera cam;
 
-
     public void Start()
     {
-        float posX = cam.transform.position.x + cam.orthographicSize;
-        float posY = cam.transform.position.y;
-
-        display.Create(4, 2, new Vector2(posX, posY), grid.blockSize, grid.outlinePercent, grid.blockPrefab, whiteSprite, transform);
+        CreateDisplay();
         Clear();
     }
 
-    private void Clear()
+    public void CreateDisplay()
+    {
+        display.Create(4, 2, transform.position, grid.blockSize, grid.outlinePercent, grid.blockPrefab, whiteSprite, transform);
+    }
+
+    public void Clear()
     {
         for (int y = 0; y < 2; y++)
         {

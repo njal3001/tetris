@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Tetris : MonoBehaviour
 {
-    public Grid grid;
-    public NextTetrominoDisplay nextTetrominoDisplay;
+    public Grid grid;   
+    public TetrominoDisplay nextTetrominoDisplay;
+    public TetrominoDisplay holdingTetrominoDisplay;
 
     [Header("Level Properties")]
     public float[] levelClockTime = new float[] { 48/61f, 43/61f, 38/61f, 33/61f, 28/61f, 23/61f, 18/61f, 13/61f, 8/61f, 6/61f, 5/61f, 5/61f, 5/61f, 4/61f, 4/61f, 4/61f, 3/61f, 3/61f, 3/61f,
@@ -60,6 +61,8 @@ public class Tetris : MonoBehaviour
     private List<Tetromino> nextTetrominos = new List<Tetromino>();
     private Tetromino activeTetromino;
     private Tetromino nextTetromino;
+    private Tetromino holdingTetromino;
+    private bool canHold;
 
     private void Start()
     {
@@ -88,7 +91,7 @@ public class Tetris : MonoBehaviour
 
         if (!tetrominoSpawned && !grid.ClearRowsEffectPlaying())
         {
-            HandleSpawnTetromino();
+            HandleSpawnNextTetromino();
         }
         
 
@@ -127,13 +130,20 @@ public class Tetris : MonoBehaviour
         tetrominoSpawned = false;
     }
 
-    private void HandleSpawnTetromino()
+    private void HandleSpawnTetromino(Tetromino tetromino)
     {
         currClockTime = 0;
-        activeTetromino = nextTetromino;
-        UpdateNextTetromino();
+        activeTetromino = tetromino;
         activeTetromino.Spawn(new Vector2(3, 0), grid);
         tetrominoSpawned = true;
+    }
+
+    private void HandleSpawnNextTetromino()
+    {
+        HandleSpawnTetromino(nextTetromino);
+        UpdateNextTetromino();
+
+        canHold = true;
     }
 
     private void UpdateNextTetromino()
@@ -225,12 +235,15 @@ public class Tetris : MonoBehaviour
         grid.Clear();
         nextTetrominos.Clear();
         UpdateNextTetromino();
+        holdingTetromino = null;
+        holdingTetrominoDisplay.Clear();
         currClockTime = 0;
         normalClockTime = levelClockTime[Mathf.Min(level, levelClockTime.Length - 1)];
         activeClockTime = normalClockTime;
         softDropClockTime = Mathf.Min(maxSoftDropClockTime, normalClockTime * softDropClockTimeMultiplier);
+        canHold = true;
 
-        HandleSpawnTetromino();
+        HandleSpawnNextTetromino();
     }
 
     private void UpdateText()
@@ -252,6 +265,27 @@ public class Tetris : MonoBehaviour
         return tetromino;
     }
 
+    private void HandleHoldTetromino()
+    {
+        Tetromino currHolding = holdingTetromino;
+
+        holdingTetromino = activeTetromino;
+
+        holdingTetromino.Clear();
+
+        if (currHolding != null)
+        {
+            HandleSpawnTetromino(currHolding);
+        }
+        else
+        {
+            HandleSpawnNextTetromino();
+        }
+
+        holdingTetrominoDisplay.Display(holdingTetromino);
+        canHold = false;
+    }
+
     private void HandlePlayerInput()
     {
         if (!tetrominoSpawned)
@@ -262,6 +296,11 @@ public class Tetris : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             HandleHardDrop();
+        }
+
+        if (Input.GetKeyDown(KeyCode.C) && canHold)
+        {
+            HandleHoldTetromino();
         }
 
         if (Input.GetKey(KeyCode.DownArrow))
@@ -305,14 +344,14 @@ public class Tetris : MonoBehaviour
 
         prevInputX = inputX;
 
-        if (Input.GetKeyDown(KeyCode.V))
+        if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             if (activeTetromino.Rotate(true)) 
             {
                 wasMoved = true;
             }
         }
-        else if (Input.GetKeyDown(KeyCode.C))
+        else if (Input.GetKeyDown(KeyCode.Z))
         {
             if (activeTetromino.Rotate(false))
             {
