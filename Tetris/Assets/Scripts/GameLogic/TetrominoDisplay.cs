@@ -8,8 +8,6 @@ public class TetrominoDisplay : MonoBehaviour
     public GridDisplay display;
     public Sprite whiteSprite;
 
-    public UnityEngine.Camera cam;
-
     public void Start()
     {
         CreateDisplay();
@@ -18,7 +16,7 @@ public class TetrominoDisplay : MonoBehaviour
 
     public void CreateDisplay()
     {
-        display.Create(4, 2, transform.position, grid.blockSize, grid.outlinePercent, grid.blockPrefab, whiteSprite, transform);
+        display.Create(4, 2, grid.blockSize, grid.outlinePercent, grid.blockPrefab, whiteSprite);
     }
 
     public void Clear()
@@ -28,7 +26,7 @@ public class TetrominoDisplay : MonoBehaviour
             for (int x = 0; x < 4; x++)
             {
                 display.SetSprite(x, y, whiteSprite);
-                display.SetColor(x, y, cam.backgroundColor);
+                display.SetColor(x, y, Color.black);
             }
         }
     }

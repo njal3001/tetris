@@ -7,26 +7,26 @@ public class GridDisplay : MonoBehaviour
     private GameObject[,] gridDisplay;
     private Dictionary<GameObject, SpriteRenderer> blockDict = new Dictionary<GameObject, SpriteRenderer>();
 
-    public void Create(int length, int height, Vector2 position, float blockSize, float outlinePercent, GameObject blockPrefab, Sprite noBlockSprite, Transform blocksParent)
+    public GameObject backgroundPrefab;
+
+    public void Create(int length, int height, float blockSize, float outlinePercent, GameObject blockPrefab, Sprite noBlockSprite)
     {
         gridDisplay = new GameObject[height, length];
 
-        Transform oldBlocks = blocksParent.Find("Blocks");
-        if (oldBlocks != null)
+        while (transform.childCount > 0)
         {
-            DestroyImmediate(oldBlocks.gameObject);
+            DestroyImmediate(transform.GetChild(0).gameObject);
         }
 
         Transform blocks = (new GameObject("Blocks")).transform;
-        blocks.parent = blocksParent;
+        blocks.parent = transform;
 
-        Vector2 currPos = position;
+        Vector2 currPos = transform.position;
         for (int y = 0; y < height; y++)
         {
             for (int x = 0; x < length; x++)
             {
-                GameObject gameBlock = Instantiate(blockPrefab, currPos, Quaternion.identity);
-                gameBlock.transform.parent = blocks.transform;
+                GameObject gameBlock = Instantiate(blockPrefab, currPos, Quaternion.identity, blocks.transform);
 
                 gameBlock.name = "Block(" + x + ", " + y + ")";
                 SpriteRenderer spriteRenderer = gameBlock.GetComponent<SpriteRenderer>();
@@ -38,16 +38,25 @@ public class GridDisplay : MonoBehaviour
                 gameBlock.transform.localScale = new Vector3(size, size, 1);
                 gridDisplay[y, x] = gameBlock;
 
-                GameObject backgroundBlock = Instantiate(blockPrefab, new Vector3(currPos.x, currPos.y, 1), Quaternion.identity);
+                GameObject backgroundBlock = Instantiate(blockPrefab, new Vector3(currPos.x, currPos.y, 1), Quaternion.identity, gameBlock.transform);
                 backgroundBlock.GetComponent<SpriteRenderer>().sprite = noBlockSprite;
-                backgroundBlock.transform.localScale = new Vector3(size, size, 1);
-                backgroundBlock.transform.parent = gameBlock.transform;
+                backgroundBlock.transform.localScale = new Vector3(1, 1, 1);
 
                 currPos.x += blockSize;
             }
             currPos.y -= blockSize;
-            currPos.x = position.x;
+            currPos.x = transform.position.x;
         }
+
+        float backgroundXPos = transform.position.x + (length / 2f) * blockSize - (blockSize / 2f);
+        float backgroundYPos = transform.position.y - (height / 2f) * blockSize + (blockSize / 2f);
+        Vector3 backgroundPos = new Vector3(backgroundXPos, backgroundYPos, 5);
+
+        GameObject background = Instantiate(backgroundPrefab, backgroundPos, Quaternion.identity, transform);
+        background.name = "Background";
+
+        background.transform.localScale = new Vector3(length * blockSize, height * blockSize, 1);
+
     }
 
     public void SetSprite(int x, int y, Sprite sprite)

@@ -11,7 +11,6 @@ public class Grid : MonoBehaviour
     private Block[,] grid;
 
     [Header("Display Properties")]
-    public Vector2 position;
     public float blockSize;
     public float outlinePercent;
     public GameObject blockPrefab;
@@ -37,7 +36,7 @@ public class Grid : MonoBehaviour
 
     public void CreateDisplay()
     {
-        gridDisplay.Create(length, height, position, blockSize, outlinePercent, blockPrefab, noBlockSprite, transform);
+        gridDisplay.Create(length, height, blockSize, outlinePercent, blockPrefab, noBlockSprite);  
     }
 
     public void StartClearedRowsEffect()
