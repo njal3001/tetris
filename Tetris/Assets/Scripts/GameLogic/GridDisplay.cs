@@ -48,6 +48,8 @@ public class GridDisplay : MonoBehaviour
             currPos.x = transform.position.x;
         }
 
+        if (backgroundPrefab == null) return;
+
         float backgroundXPos = transform.position.x + (length / 2f) * blockSize - (blockSize / 2f);
         float backgroundYPos = transform.position.y - (height / 2f) * blockSize + (blockSize / 2f);
         Vector3 backgroundPos = new Vector3(backgroundXPos, backgroundYPos, 5);

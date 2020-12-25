@@ -6,7 +6,6 @@ public class TetrominoDisplay : MonoBehaviour
 {
     public Grid grid;
     public GridDisplay display;
-    public Sprite whiteSprite;
 
     public void Start()
     {
@@ -16,7 +15,7 @@ public class TetrominoDisplay : MonoBehaviour
 
     public void CreateDisplay()
     {
-        display.Create(4, 2, grid.blockSize, grid.outlinePercent, grid.blockPrefab, whiteSprite);
+        display.Create(4, 2, grid.blockSize, grid.outlinePercent, grid.blockPrefab, grid.noBlockSprite);
     }
 
     public void Clear()
@@ -25,8 +24,7 @@ public class TetrominoDisplay : MonoBehaviour
         {
             for (int x = 0; x < 4; x++)
             {
-                display.SetSprite(x, y, whiteSprite);
-                display.SetColor(x, y, Color.black);
+                display.SetAlpha(x, y, 0);
             }
         }
     }
@@ -40,7 +38,7 @@ public class TetrominoDisplay : MonoBehaviour
             int x = (int)pos.x;
             int y = (int)pos.y;
             display.SetSprite(x, y, tetromino.BlockType.Sprite);
-            display.SetColor(x, y, Color.white);
+            display.SetAlpha(x, y, 1);
         }
     }
 
