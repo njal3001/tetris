@@ -19,7 +19,6 @@ public class Grid : MonoBehaviour
     public GridDisplay gridDisplay;
 
     [Header("Effects")]
-    public AudioManager audioManager;
     public float clearRowEffectTime = 1;
     private bool clearRowsEffectPlaying;
     private List<int> clearedRowsY;
@@ -55,7 +54,6 @@ public class Grid : MonoBehaviour
             clearBlockLeftXPos = clearBlockRightXPos = length / 2;
         }
 
-        audioManager.Play("rowClear");
     }
 
     public bool ClearRowsEffectPlaying()

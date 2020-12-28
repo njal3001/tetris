@@ -63,17 +63,22 @@ public class GridDisplay : MonoBehaviour
 
     public void SetSprite(int x, int y, Sprite sprite)
     {
+        if (OutOfBounds(x, y)) return;
+
         blockDict[gridDisplay[y, x]].sprite = sprite;
     }
 
     public void SetAlpha(int x, int y, float alpha)
     {
+        if (OutOfBounds(x, y)) return;
+
         Color color = blockDict[gridDisplay[y, x]].color;
         blockDict[gridDisplay[y, x]].color = new Color(color.r, color.g, color.b, alpha);
     }
 
-    public void SetColor(int x, int y, Color color)
+    private bool OutOfBounds(int x, int y)
     {
-        blockDict[gridDisplay[y, x]].color = color;
+        return x < 0 || y < 0 || x >= gridDisplay.GetLength(1) || y >= gridDisplay.GetLength(0);
     }
+
 }

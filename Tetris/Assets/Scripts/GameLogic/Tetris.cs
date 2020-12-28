@@ -7,6 +7,7 @@ public class Tetris : MonoBehaviour
     public Grid grid;   
     public SpriteDisplay nextTetrominoDisplay;
     public SpriteDisplay holdingTetrominoDisplay;
+    public AudioManager audioManager;
 
     [Header("Level Properties")]
     public float[] levelClockTime = new float[] { 48/61f, 43/61f, 38/61f, 33/61f, 28/61f, 23/61f, 18/61f, 13/61f, 8/61f, 6/61f, 5/61f, 5/61f, 5/61f, 4/61f, 4/61f, 4/61f, 3/61f, 3/61f, 3/61f,
@@ -128,6 +129,16 @@ public class Tetris : MonoBehaviour
         int rowsCleared = grid.ClearFullRows();
         if (rowsCleared > 0)
         {
+
+            if (rowsCleared == 4)
+            {
+                audioManager.Play("tetrisRowClear");
+            }
+            else
+            {
+                audioManager.Play("rowClear");
+            }
+
             score += scoreList[rowsCleared - 1];
             totalRowsCleared += rowsCleared;
 
@@ -142,6 +153,10 @@ public class Tetris : MonoBehaviour
             }
 
             UpdateText();
+        }
+        else
+        {
+            audioManager.Play("tetrominoLock");
         }
 
         tetrominoSpawned = false;
@@ -171,7 +186,11 @@ public class Tetris : MonoBehaviour
 
     private void HandleMoveTetrominoDown()
     {
-        if (!activeTetromino.Move(Vector2.up) && tetrominoLockDelayFinished)
+        bool movedDown = activeTetromino.Move(Vector2.up);
+
+        if (movedDown) audioManager.Play("tetrominoMove");
+
+        if (!movedDown && tetrominoLockDelayFinished)
         {
             HandleTetrominoFinished();
             tetrominoLockDelayFinished = false;
@@ -225,8 +244,7 @@ public class Tetris : MonoBehaviour
 
     private void HandleTetrominoFinished()
     {
-        grid.audioManager.Play("tetrominoLock");
-
+        
         if (activeTetromino.OutOfSight())
         {
             HandleGameOver();
@@ -239,7 +257,8 @@ public class Tetris : MonoBehaviour
 
     private void HandleGameOver()
     {
-        print("GAME OVER \n Your score was: " + score);
+        audioManager.Play("gameOver");
+
         Initialize();
     }
 
@@ -301,6 +320,8 @@ public class Tetris : MonoBehaviour
 
         holdingTetrominoDisplay.Display(tetrominoSprites[holdingTetromino]);
         canHold = false;
+
+        audioManager.Play("tetrominoHold");
     }
 
     private void HandlePlayerInput()
@@ -329,6 +350,8 @@ public class Tetris : MonoBehaviour
             activeClockTime = normalClockTime;
         }
 
+        bool moved = false;
+
         float inputX = Input.GetAxisRaw("Horizontal");
 
         if (inputX == prevInputX && inputX != 0)
@@ -341,7 +364,7 @@ public class Tetris : MonoBehaviour
                 {
                     if (activeTetromino.Move(inputX == 1 ? Vector2.right : Vector2.left))
                     {
-                        wasMoved = true;
+                        moved = true;
                     }
                     currFastMoveTime = 0;
                 }
@@ -354,7 +377,7 @@ public class Tetris : MonoBehaviour
             {
                 if (activeTetromino.Move(inputX == 1 ? Vector2.right : Vector2.left))
                 {
-                    wasMoved = true;
+                    moved = true;
                 }
             }
         }
@@ -365,15 +388,21 @@ public class Tetris : MonoBehaviour
         {
             if (activeTetromino.Rotate(true)) 
             {
-                wasMoved = true;
+                moved = true;
             }
         }
         else if (Input.GetKeyDown(KeyCode.Z))
         {
             if (activeTetromino.Rotate(false))
             {
-                wasMoved = true;
+                moved = true;
             }
+        }
+
+        if (moved)
+        {
+            wasMoved = true;
+            audioManager.Play("tetrominoMove");
         }
     }
 
