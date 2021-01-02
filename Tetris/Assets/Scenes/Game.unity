@@ -2813,6 +2813,11 @@ MonoBehaviour:
     volume: 1
     pitch: 1
     loop: 0
+  - clip: {fileID: 8300000, guid: 3f184e35e35cdc8488bbc22f69491eb9, type: 3}
+    name: tetrisSong
+    volume: 0.05
+    pitch: 1
+    loop: 1
 --- !u!4 &142528060
 Transform:
   m_ObjectHideFlags: 0

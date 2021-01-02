@@ -264,6 +264,7 @@ public class Tetris : MonoBehaviour
 
     private void Initialize()
     {
+        audioManager.Play("tetrisSong");
         score = 0;
         level = startingLevel;
         totalRowsCleared = 0;
