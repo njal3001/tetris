@@ -1,13 +1,15 @@
-﻿using System.Collections.Generic;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
 public class Tetris : MonoBehaviour
 {
-    public Grid grid;   
-    public SpriteDisplay nextTetrominoDisplay;
-    public SpriteDisplay holdingTetrominoDisplay;
+    public Grid grid;
     public AudioManager audioManager;
+
+    [SerializeField]
+    private TetrominoGenerator tetrominoGenerator;
+    [SerializeField]
+    private TetrominoHolder tetrominoHolder;
 
     [Header("Level Properties")]
     public float[] levelClockTime = new float[] { 48/61f, 43/61f, 38/61f, 33/61f, 28/61f, 23/61f, 18/61f, 13/61f, 8/61f, 6/61f, 5/61f, 5/61f, 5/61f, 4/61f, 4/61f, 4/61f, 3/61f, 3/61f, 3/61f,
@@ -45,54 +47,15 @@ public class Tetris : MonoBehaviour
     public TextMeshProUGUI linesText;
     public TextMeshProUGUI levelText;
 
-    [Header("Tetromino Properties")]
-    public Sprite IBlockSprite;
-    public Sprite JBlockSprite;
-    public Sprite LBlockSprite;
-    public Sprite OBlockSprite;
-    public Sprite SBlockSprite;
-    public Sprite TBlockSprite;
-    public Sprite ZBlockSprite;
-
-    public Sprite ITetrominoSprite;
-    public Sprite JTetrominoSprite;
-    public Sprite LTetrominoSprite;
-    public Sprite OTetrominoSprite;
-    public Sprite STetrominoSprite;
-    public Sprite TTetrominoSprite;
-    public Sprite ZTetrominoSprite;
-    private Dictionary<Tetromino, Sprite> tetrominoSprites = new Dictionary<Tetromino, Sprite>();
-
     private bool wasMoved;
     private float prevInputX;
 
-    private List<Tetromino> tetrominos;
-    private List<Tetromino> nextTetrominos = new List<Tetromino>();
     private Tetromino activeTetromino;
-    private Tetromino nextTetromino;
-    private Tetromino holdingTetromino;
+
     private bool canHold;
 
     private void Start()
     {
-        Tetromino I = new BoxRotationTetromino(new Vector2[] { new Vector2(0, 1), new Vector2(1, 1), new Vector2(2, 1), new Vector2(3, 1) }, 4, new Block(IBlockSprite));
-        Tetromino J = new BlockRotationTetromino(new Vector2[] { new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 1), new Vector2(2, 1) }, new Vector2(1, 1), new Block(JBlockSprite));
-        Tetromino L = new BlockRotationTetromino(new Vector2[] { new Vector2(0, 1), new Vector2(1, 1), new Vector2(2, 1), new Vector2(2, 0) }, new Vector2(1, 1), new Block(LBlockSprite));
-        Tetromino O = new BoxRotationTetromino(new Vector2[] { new Vector2(0, 0), new Vector2(1, 0), new Vector2(0, 1), new Vector2(1, 1) }, 2, new Block(OBlockSprite));
-        Tetromino S = new BlockRotationTetromino(new Vector2[] { new Vector2(0, 1), new Vector2(1, 1), new Vector2(1, 0), new Vector2(2, 0) }, new Vector2(1, 1), new Block(SBlockSprite));
-        Tetromino T = new BlockRotationTetromino(new Vector2[] { new Vector2(0, 1), new Vector2(1, 1), new Vector2(1, 0), new Vector2(2, 1) }, new Vector2(1, 1), new Block(TBlockSprite));
-        Tetromino Z = new BlockRotationTetromino(new Vector2[] { new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(2, 1) }, new Vector2(1, 1), new Block(ZBlockSprite));
-
-        tetrominos = new List<Tetromino>{I, J, L, O, S, T, Z};
-
-        tetrominoSprites[I] = ITetrominoSprite;
-        tetrominoSprites[J] = JTetrominoSprite;
-        tetrominoSprites[L] = LTetrominoSprite;
-        tetrominoSprites[O] = OTetrominoSprite;
-        tetrominoSprites[S] = STetrominoSprite;
-        tetrominoSprites[T] = TTetrominoSprite;
-        tetrominoSprites[Z] = ZTetrominoSprite;
-
         Initialize();
     }
 
@@ -172,16 +135,9 @@ public class Tetris : MonoBehaviour
 
     private void HandleSpawnNextTetromino()
     {
-        HandleSpawnTetromino(nextTetromino);
-        UpdateNextTetromino();
+        HandleSpawnTetromino(tetrominoGenerator.NextTetromino);
 
         canHold = true;
-    }
-
-    private void UpdateNextTetromino()
-    {
-        nextTetromino = GetNextTetromino();
-        nextTetrominoDisplay.Display(tetrominoSprites[nextTetromino]);
     }
 
     private void HandleMoveTetrominoDown()
@@ -270,10 +226,6 @@ public class Tetris : MonoBehaviour
         totalRowsCleared = 0;
         UpdateText();
         grid.Clear();
-        nextTetrominos.Clear();
-        UpdateNextTetromino();
-        holdingTetromino = null;
-        holdingTetrominoDisplay.Display(null);
         currClockTime = 0;
         normalClockTime = levelClockTime[Mathf.Min(level, levelClockTime.Length - 1)];
         activeClockTime = normalClockTime;
@@ -290,25 +242,11 @@ public class Tetris : MonoBehaviour
         levelText.text = level.ToString();
     }
 
-    private Tetromino GetNextTetromino()
-    {
-        if (nextTetrominos.Count == 0)
-        {
-            nextTetrominos.AddRange(tetrominos);
-        }
-
-        Tetromino tetromino = nextTetrominos[Random.Range(0, nextTetrominos.Count)];
-        nextTetrominos.Remove(tetromino);
-        return tetromino;
-    }
 
     private void HandleHoldTetromino()
     {
-        Tetromino currHolding = holdingTetromino;
 
-        holdingTetromino = activeTetromino;
-
-        holdingTetromino.Clear();
+        Tetromino currHolding = tetrominoHolder.Swap(activeTetromino);
 
         if (currHolding != null)
         {
@@ -319,7 +257,6 @@ public class Tetris : MonoBehaviour
             HandleSpawnNextTetromino();
         }
 
-        holdingTetrominoDisplay.Display(tetrominoSprites[holdingTetromino]);
         canHold = false;
 
         audioManager.Play("tetrominoHold");

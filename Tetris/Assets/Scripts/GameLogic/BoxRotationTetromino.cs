@@ -2,11 +2,8 @@
 
 public class BoxRotationTetromino : Tetromino
 {
+    [SerializeField]
     private int boxSize;
-    public BoxRotationTetromino(Vector2[] blocksPos, int boxSize, Block blockType) : base(blocksPos, blockType)
-    {
-        this.boxSize = boxSize;
-    }
 
     protected override Vector2[] GetRotatedBlocksPos(int rotation)
     {

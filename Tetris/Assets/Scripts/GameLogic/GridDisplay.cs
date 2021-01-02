@@ -65,7 +65,9 @@ public class GridDisplay : MonoBehaviour
     {
         if (OutOfBounds(x, y)) return;
 
+
         blockDict[gridDisplay[y, x]].sprite = sprite;
+
     }
 
     public void SetAlpha(int x, int y, float alpha)

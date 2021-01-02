@@ -8,7 +8,7 @@ public class Grid : MonoBehaviour
     public int length;
     public int height;
     public int hiddenRows;
-    private Block[,] grid;
+    private Sprite[,] grid;
 
     [Header("Display Properties")]
     public float blockSize;
@@ -29,7 +29,7 @@ public class Grid : MonoBehaviour
 
     public void Start()
     {
-        grid = new Block[height + hiddenRows, length];
+        grid = new Sprite[height + hiddenRows, length];
         CreateDisplay();
     }
 
@@ -124,9 +124,9 @@ public class Grid : MonoBehaviour
     {
         for (int x = 0; x < length; x++)
         {
-            Block block = grid[y, x];
+            Sprite sprite = grid[y, x];
             Set(x, y, null);
-            Set(x, y + 1, block);
+            Set(x, y + 1, sprite);
         }
     }
 
@@ -144,12 +144,12 @@ public class Grid : MonoBehaviour
         return InBounds(pos) && grid[y, x] == null;
     }
 
-    public Block Get(int x, int y)
+    public Sprite Get(int x, int y)
     {
         return grid[y, x];
     }
 
-    public Block Get(Vector2 pos)
+    public Sprite Get(Vector2 pos)
     {
         int x = (int)pos.x;
         int y = (int)pos.y;
@@ -157,24 +157,23 @@ public class Grid : MonoBehaviour
         return Get(x, y);
     }
 
-    public void Set(int x, int y, Block block)
+    public void Set(int x, int y, Sprite sprite)
     {
-        grid[y, x] = block;
-
+        grid[y, x] = sprite;
         if (y >= hiddenRows)
         {
-            Sprite sprite= block == null ? noBlockSprite : block.Sprite;
-            gridDisplay.SetSprite(x, y - hiddenRows, sprite);
+            Sprite displaySprite = sprite == null ? noBlockSprite : sprite;
+            gridDisplay.SetSprite(x, y - hiddenRows, displaySprite);
             gridDisplay.SetAlpha(x, y - hiddenRows, 1f);
         }
     }
 
-    public void Set(Vector2 pos, Block block)
+    public void Set(Vector2 pos, Sprite sprite)
     {
         int x = (int)pos.x; 
         int y = (int)pos.y;
 
-        Set(x, y, block);
+        Set(x, y, sprite);
     }
 
     public void Clear()

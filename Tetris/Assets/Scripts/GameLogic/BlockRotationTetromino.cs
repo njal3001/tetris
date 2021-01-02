@@ -2,13 +2,9 @@
 
 public class BlockRotationTetromino : Tetromino
 {
-
+    [SerializeField]
     private Vector2 pivot;
 
-    public BlockRotationTetromino(Vector2[] blocksPos, Vector2 pivot, Block blockType) : base(blocksPos, blockType)
-    {
-        this.pivot = pivot;
-    } 
 
     protected override Vector2[] GetRotatedBlocksPos(int rotation)
     {

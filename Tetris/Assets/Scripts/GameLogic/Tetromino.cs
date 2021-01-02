@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public abstract class Tetromino
+public abstract class Tetromino : MonoBehaviour
 {
-    private Block blockType;
+    [SerializeField]
     protected Vector2[] blocksPos = new Vector2[4];
+    [SerializeField]
+    private Sprite blockSprite;
     private Grid grid;
 
     private Vector2[] currBlocksPos;
@@ -16,10 +18,10 @@ public abstract class Tetromino
 
     private List<Vector2> oldGhostBlocksPos;
 
-    public Tetromino(Vector2[] blocksPos, Block blockType)
+    public event Action<Vector2[]> OnPosChanged;
+
+    private void Start()
     {
-        Array.Copy(blocksPos, this.blocksPos, 4);
-        this.blockType = blockType;
         InitializeWallKickData();
     }
 
@@ -43,7 +45,7 @@ public abstract class Tetromino
         //Spawns tetromino
         foreach (Vector2 pos in gridBlocksPos)
         {
-            grid.Set(pos, blockType);
+            grid.Set(pos, blockSprite);
         }
 
         this.relativeOrigin = relativeOrigin;
@@ -52,6 +54,7 @@ public abstract class Tetromino
 
         oldGhostBlocksPos = new List<Vector2>();
         DrawGhost();
+        OnPosChanged?.Invoke(gridBlocksPos);
 
         return true;
     }
@@ -81,11 +84,13 @@ public abstract class Tetromino
 
         foreach (Vector2 newPos in newGridBlocksPos)
         {
-            grid.Set(newPos, blockType);
+            grid.Set(newPos, blockSprite);
         }
 
         relativeOrigin += moveAmount;
+
         DrawGhost();
+        OnPosChanged?.Invoke(newGridBlocksPos);
 
         return true;
     }
@@ -146,13 +151,14 @@ public abstract class Tetromino
             }
             foreach (Vector2 newPos in rotatedGridBlocksPos)
             {
-                grid.Set(newPos, blockType);
+                grid.Set(newPos, blockSprite);
             }
 
             currBlocksPos = rotatedBlocksPos;
             rotation = newRotation;
             relativeOrigin += kick;
             DrawGhost();
+            OnPosChanged?.Invoke(rotatedBlocksPos);
 
             return true;
         }
@@ -203,7 +209,7 @@ public abstract class Tetromino
 
             if (!currGridBlocksPos.Contains(ghostPos))
             {
-                UpdateGhostBlock(ghostPos, blockType.Sprite, grid.ghostBlockAlpha);
+                UpdateGhostBlock(ghostPos, blockSprite, grid.ghostBlockAlpha);
                 oldGhostBlocksPos.Add(ghostPos);
             }
         }
@@ -259,11 +265,6 @@ public abstract class Tetromino
             }
         }
         return false;
-    }
-
-    public Block BlockType
-    {
-        get { return blockType; }
     }
 
     public Vector2[] BlocksPos
