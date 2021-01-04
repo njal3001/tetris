@@ -61,9 +61,6 @@ public class TetrisStats : MonoBehaviour
     {
         tetris.GameStarted += Reset;
         gridRowClearer.FullRowsClearingStarted += OnRowsCleared;
-
-        //Subject to change, seems weird that this class subscribes methods from other classes to it's own events
-        LevelChanged += tetris.OnLevelChanged;
     }
 
     private void Reset()
