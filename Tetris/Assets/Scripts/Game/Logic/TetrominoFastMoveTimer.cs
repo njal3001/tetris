@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TetrominoFastMoveTimer : TetrominoTimer
+public class TetrominoFastMoveTimer : AbstractTimer
 {
 
     [SerializeField]

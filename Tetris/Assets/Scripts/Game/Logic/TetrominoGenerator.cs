@@ -36,4 +36,10 @@ public class TetrominoGenerator : TetrominoStorer
         nextTetrominos.Remove(Stored);
     }
 
+    protected override void Clear()
+    {
+        nextTetrominos.Clear();
+        base.Clear();
+    }
+
 }

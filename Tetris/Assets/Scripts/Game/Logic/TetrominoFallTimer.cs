@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class TetrominoFallTimer : TetrominoTimer
+public class TetrominoFallTimer : AbstractTimer
 {
     [SerializeField]
     private TetrisStats stats;

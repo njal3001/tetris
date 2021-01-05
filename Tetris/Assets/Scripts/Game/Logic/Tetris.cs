@@ -12,24 +12,24 @@ public class Tetris : MonoBehaviour
     private TetrominoFallTimer fallTimer;
     [SerializeField]
     private TetrominoFastMoveTimer fastMoveTimer;
+    [SerializeField]
+    private TetrominoLockDelayTimer lockDelayTimer;
 
-    public AudioManager audioManager;
+    [SerializeField]
+    private AudioManager audioManager;
 
     [SerializeField]
     private TetrominoGenerator tetrominoGenerator;
     [SerializeField]
     private TetrominoHolder tetrominoHolder;
 
-    public float maxTetrominoLockDelay = 2;
-    private float currMaxTetrominoLockDelay;
-    public float minTetrominoLockDelay = 0.5f;
-    private float currMinTetrominoLockDelay;
-    private bool tetrominoLockDelayed;
     private bool tetrominoLockDelayFinished;
+
+    //Quick fix....
+    private int lockDelayRestartCounter;
 
     private bool tetrominoSpawned;
 
-    private bool wasMoved;
     private float prevInputX;
 
     private Tetromino activeTetromino;
@@ -44,6 +44,7 @@ public class Tetris : MonoBehaviour
         gridRowClearer.FullRowsClearingEnded += HandleSpawnNextTetromino;
         fallTimer.Tick += HandleMoveTetrominoDown;
         fastMoveTimer.Tick += OnFastMoveTick;
+        lockDelayTimer.Finished += OnLockDelayFinished;
     }
 
     private void Start()
@@ -54,11 +55,6 @@ public class Tetris : MonoBehaviour
     private void Update()
     {
         HandlePlayerInput();
-
-        if (tetrominoLockDelayed)
-        {
-            HandleTetrominoWait();
-        }
     }
 
     private void HandleClearFullRows()
@@ -89,6 +85,8 @@ public class Tetris : MonoBehaviour
         activeTetromino.Spawn();
         tetrominoSpawned = true;
         fallTimer.StartTimer();
+
+        lockDelayRestartCounter = 0;
     }
 
     private void HandleSpawnNextTetromino()
@@ -104,57 +102,35 @@ public class Tetris : MonoBehaviour
 
         bool movedDown = activeTetromino.Move(Vector2.up);
 
-        if (movedDown) audioManager.Play("tetrominoMove");
+        if (movedDown)
+        {
+            audioManager.Play("tetrominoMove");
+
+            if (lockDelayTimer.TimerOn() && lockDelayRestartCounter <= 2)
+            {
+                lockDelayRestartCounter++;
+                lockDelayTimer.StopTimer();
+            }
+        }
 
         if (!movedDown && tetrominoLockDelayFinished)
         {
             HandleTetrominoFinished();
             tetrominoLockDelayFinished = false;
         }
-        else if (!activeTetromino.CanMove(Vector2.up) && !tetrominoLockDelayed)
-        {
-            tetrominoLockDelayed = true;
-            wasMoved = false;
-            currMaxTetrominoLockDelay = 0;
-            currMinTetrominoLockDelay = 0;
-        }
+        else if (!activeTetromino.CanMove(Vector2.up) && !lockDelayTimer.TimerOn())
+            lockDelayTimer.StartTimer();
     }
 
-    private void HandleTetrominoWait()
+    private void OnLockDelayFinished()
     {
-        currMaxTetrominoLockDelay += Time.deltaTime;
-        currMinTetrominoLockDelay += Time.deltaTime;
-
-        bool waitOver = false;
-
-        if (currMaxTetrominoLockDelay >= maxTetrominoLockDelay)
+        if (!activeTetromino.CanMove(Vector2.up))
         {
-            waitOver = true;
+            HandleTetrominoFinished();
         }
-        else if (currMinTetrominoLockDelay >= minTetrominoLockDelay)
+        else
         {
-            if (wasMoved)
-            {
-                currMinTetrominoLockDelay = 0;
-                wasMoved = false;
-            }
-            else
-            {
-                waitOver = true;
-            }
-        }
-
-        if (waitOver)
-        {
-            if (!activeTetromino.CanMove(Vector2.up))
-            {
-                HandleTetrominoFinished();
-            }
-            else
-            {
-                tetrominoLockDelayFinished = true;
-            }
-            tetrominoLockDelayed = false;
+            tetrominoLockDelayFinished = true;
         }
     }
 
@@ -244,6 +220,8 @@ public class Tetris : MonoBehaviour
         else
         {
             fastMoveTimer.StopTimer();
+            fastMoveTicked = false;
+
             if (inputX != 0)
                 if (activeTetromino.Move(inputX == 1 ? Vector2.right : Vector2.left))
                     moved = true;
@@ -268,7 +246,7 @@ public class Tetris : MonoBehaviour
 
         if (moved)
         {
-            wasMoved = true;
+            lockDelayTimer.ResetLockDelay();
             audioManager.Play("tetrominoMove");
         }
     }
