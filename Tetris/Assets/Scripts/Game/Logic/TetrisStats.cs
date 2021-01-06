@@ -60,7 +60,7 @@ public class TetrisStats : MonoBehaviour
     private void OnEnable()
     {
         tetris.GameStarted += Reset;
-        gridRowClearer.FullRowsClearingStarted += OnRowsCleared;
+        gridRowClearer.RowsCleared += OnRowsCleared;
     }
 
     private void Reset()
@@ -89,6 +89,6 @@ public class TetrisStats : MonoBehaviour
     private void OnDisable()
     {
         tetris.GameStarted -= Reset;
-        gridRowClearer.FullRowsClearingStarted -= OnRowsCleared;
+        gridRowClearer.RowsCleared -= OnRowsCleared;
     }
 }

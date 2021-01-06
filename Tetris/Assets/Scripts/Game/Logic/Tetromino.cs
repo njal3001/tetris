@@ -71,7 +71,14 @@ public abstract class Tetromino : MonoBehaviour
         return true;
     }
 
+
+    //To be removed....
     public bool Spawn()
+    {
+        return Spawn(spawnPoint);
+    }
+
+    public bool Spawn(Vector2 spawnPoint)
     {
         Vector2[] newPos = Move(relativeSpawnPos, spawnPoint);
 

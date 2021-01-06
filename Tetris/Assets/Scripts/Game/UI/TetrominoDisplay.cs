@@ -24,10 +24,10 @@ public class TetrominoDisplay : MonoBehaviour
         tetrominoStorer.TetrominoChanged += Display;
     }
 
-    private void Display(Tetromino tetromino)
+    private void Display(Tetromino prevTetromino, Tetromino newTetromino)
     {
         TetrominoSprite tetrominoSprite = Array.
-            Find(tetrominoSprites, element => element.Tetromino == tetromino);
+            Find(tetrominoSprites, element => element.Tetromino == newTetromino);
         spriteRenderer.sprite = tetrominoSprite == null ? null : tetrominoSprite.Sprite;
     }
 

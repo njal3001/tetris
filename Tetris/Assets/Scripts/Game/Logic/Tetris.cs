@@ -4,47 +4,27 @@ using UnityEngine;
 
 public class Tetris : MonoBehaviour
 {
+
     [SerializeField]
     private TetrisGrid grid;
     [SerializeField]
-    private TetrisGridRowClearer gridRowClearer;
-    [SerializeField]
-    private TetrominoFallTimer fallTimer;
-    [SerializeField]
-    private TetrominoFastMoveTimer fastMoveTimer;
-    [SerializeField]
-    private TetrominoLockDelayTimer lockDelayTimer;
-
-    [SerializeField]
     private AudioManager audioManager;
 
+    //Should rather have this class handle game states, game started, game over and 
     [SerializeField]
-    private TetrominoGenerator tetrominoGenerator;
+    private TetrominoSpawner tetrominoSpawner;
     [SerializeField]
-    private TetrominoHolder tetrominoHolder;
+    private TetrisGridRowClearer gridRowClearer;
 
-    private bool tetrominoLockDelayFinished;
-
-    //Quick fix....
-    private int lockDelayRestartCounter;
-
-    private bool tetrominoSpawned;
-
-    private float prevInputX;
-
-    private Tetromino activeTetromino;
-
-    private bool canHold;
-    private bool fastMoveTicked;
+    //TO be removed
+    [SerializeField]
+    private TetrominoFall tetrominoFall;
 
     public event Action GameStarted;
 
     private void OnEnable()
     {
-        gridRowClearer.FullRowsClearingEnded += HandleSpawnNextTetromino;
-        fallTimer.Tick += HandleMoveTetrominoDown;
-        fastMoveTimer.Tick += OnFastMoveTick;
-        lockDelayTimer.Finished += OnLockDelayFinished;
+        tetrominoFall.TetrominoFinished2 += OnTetrominoFinished;
     }
 
     private void Start()
@@ -52,14 +32,25 @@ public class Tetris : MonoBehaviour
         Initialize();
     }
 
-    private void Update()
+    private void Initialize()
     {
-        HandlePlayerInput();
+        GameStarted?.Invoke();
+
+        audioManager.Play("tetrisSong");
+        grid.Clear();
+        tetrominoSpawner.SpawnNextTetromino();
+    }
+
+    private void OnTetrominoFinished(Tetromino tetromino)
+    {
+        if (tetromino.OutOfSight())
+            HandleGameOver();
+        else
+            HandleClearFullRows();
     }
 
     private void HandleClearFullRows()
     {
-        tetrominoSpawned = false;
         int lines = gridRowClearer.ClearFullRows();
         if (lines > 0)
         {
@@ -79,187 +70,11 @@ public class Tetris : MonoBehaviour
         }
     }
 
-    private void HandleSpawnTetromino(Tetromino tetromino)
-    {
-        activeTetromino = tetromino;
-        activeTetromino.Spawn();
-        tetrominoSpawned = true;
-        fallTimer.StartTimer();
-
-        lockDelayRestartCounter = 0;
-    }
-
-    private void HandleSpawnNextTetromino()
-    {
-        HandleSpawnTetromino(tetrominoGenerator.NextTetromino);
-
-        canHold = true;
-    }
-
-    private void HandleMoveTetrominoDown()
-    {
-        if (!tetrominoSpawned) return;
-
-        bool movedDown = activeTetromino.Move(Vector2.up);
-
-        if (movedDown)
-        {
-            audioManager.Play("tetrominoMove");
-
-            if (lockDelayTimer.TimerOn() && lockDelayRestartCounter <= 2)
-            {
-                lockDelayRestartCounter++;
-                lockDelayTimer.StopTimer();
-            }
-        }
-
-        if (!movedDown && tetrominoLockDelayFinished)
-        {
-            HandleTetrominoFinished();
-            tetrominoLockDelayFinished = false;
-        }
-        else if (!activeTetromino.CanMove(Vector2.up) && !lockDelayTimer.TimerOn())
-            lockDelayTimer.StartTimer();
-    }
-
-    private void OnLockDelayFinished()
-    {
-        if (!activeTetromino.CanMove(Vector2.up))
-        {
-            HandleTetrominoFinished();
-        }
-        else
-        {
-            tetrominoLockDelayFinished = true;
-        }
-    }
-
-    private void HandleTetrominoFinished()
-    {
-        fallTimer.StartTimer();
-
-        if (activeTetromino.OutOfSight())
-        {
-            HandleGameOver();
-        }
-        else
-        {
-            HandleClearFullRows();
-        }
-    }
-
     private void HandleGameOver()
     {
         audioManager.Play("gameOver");
 
         Initialize();
-    }
-
-    private void Initialize()
-    {
-        GameStarted?.Invoke();
-
-        audioManager.Play("tetrisSong");
-        grid.Clear();
-        canHold = true;
-
-        HandleSpawnNextTetromino();
-    }
-    private void HandleHoldTetromino()
-    {
-
-        Tetromino currHolding = tetrominoHolder.Swap(activeTetromino);
-
-        if (currHolding != null)
-        {
-            HandleSpawnTetromino(currHolding);
-        }
-        else
-        {
-            HandleSpawnNextTetromino();
-        }
-
-        canHold = false;
-
-        audioManager.Play("tetrominoHold");
-    }
-
-    private void HandlePlayerInput()
-    {
-        if (!tetrominoSpawned)
-            return;
-
-        if (Input.GetKeyDown(KeyCode.Space))
-            HandleHardDrop();
-
-        if (Input.GetKeyDown(KeyCode.C) && canHold)
-            HandleHoldTetromino();
-
-        if (Input.GetKey(KeyCode.DownArrow))
-            fallTimer.FastTimeOn = true;
-        else
-            fallTimer.FastTimeOn = false;
-
-        bool moved = false;
-
-        float inputX = Input.GetAxisRaw("Horizontal");
-
-        if (inputX == prevInputX && inputX != 0)
-        {
-            if (!fastMoveTimer.PreTimerStarted)
-                fastMoveTimer.StartTimer();
-
-            if (fastMoveTicked)
-            {
-                fastMoveTicked = false;
-                if (activeTetromino.Move(inputX == 1 ? Vector2.right : Vector2.left))
-                    moved = true;
-            }
-
-        }
-        else
-        {
-            fastMoveTimer.StopTimer();
-            fastMoveTicked = false;
-
-            if (inputX != 0)
-                if (activeTetromino.Move(inputX == 1 ? Vector2.right : Vector2.left))
-                    moved = true;
-        }
-
-        prevInputX = inputX;
-
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            if (activeTetromino.Rotate(true)) 
-            {
-                moved = true;
-            }
-        }
-        else if (Input.GetKeyDown(KeyCode.Z))
-        {
-            if (activeTetromino.Rotate(false))
-            {
-                moved = true;
-            }
-        }
-
-        if (moved)
-        {
-            lockDelayTimer.ResetLockDelay();
-            audioManager.Play("tetrominoMove");
-        }
-    }
-
-    private void OnFastMoveTick()
-    {
-        fastMoveTicked = true;
-    }
-
-    private void HandleHardDrop()
-    {
-        activeTetromino.HardDrop();
-        HandleTetrominoFinished();
     }
 
 }

@@ -11,20 +11,20 @@ public class TetrisGridRowClearer : MonoBehaviour
     [SerializeField]
     private float clearingTime;
 
-    public event Action <int>FullRowsClearingStarted;
-    public event Action FullRowsClearingEnded;
+    public event Action <int>RowsCleared;
+    public event Action TetrominoCanSpawn;
 
     public int ClearFullRows()
     {
         List<int> fullRows = grid.FullRows();
-        FullRowsClearingStarted?.Invoke(fullRows.Count);
-
+ 
         if (fullRows.Count == 0)
         {
-            FullRowsClearingEnded?.Invoke();
+            TetrominoCanSpawn?.Invoke();
             return 0;
         }
 
+        RowsCleared?.Invoke(fullRows.Count);
         StartCoroutine(ClearFullRows(grid.FullRows()));
         return fullRows.Count;
     }
@@ -52,7 +52,7 @@ public class TetrisGridRowClearer : MonoBehaviour
             for (int j = y - 1; j >= 0; j--)
                 MoveRowDown(j);
 
-        FullRowsClearingEnded?.Invoke();
+        TetrominoCanSpawn?.Invoke();
     }
     private void MoveRowDown(int y)
     {
