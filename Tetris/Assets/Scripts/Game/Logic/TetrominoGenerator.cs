@@ -10,11 +10,6 @@ public class TetrominoGenerator : TetrominoStorer
 
     private List<Tetromino> nextTetrominos = new List<Tetromino>();
 
-    private void Start()
-    {
-        UpdateNextTetromino();
-    }
-
     public Tetromino NextTetromino
     {
         get
@@ -28,9 +23,7 @@ public class TetrominoGenerator : TetrominoStorer
     private void UpdateNextTetromino()
     {
         if (nextTetrominos.Count == 0)
-        {
             nextTetrominos.AddRange(tetrominos);
-        }
 
         Stored = nextTetrominos[Random.Range(0, nextTetrominos.Count)];
         nextTetrominos.Remove(Stored);
@@ -40,6 +33,7 @@ public class TetrominoGenerator : TetrominoStorer
     {
         nextTetrominos.Clear();
         base.Clear();
+        UpdateNextTetromino();
     }
 
 }

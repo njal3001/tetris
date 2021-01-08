@@ -12,6 +12,8 @@ public class TetrisGridRowClearer : MonoBehaviour
     private float clearingTime;
 
     public event Action <int>RowsCleared;
+
+    //rename?..
     public event Action TetrominoCanSpawn;
 
     public int ClearFullRows()

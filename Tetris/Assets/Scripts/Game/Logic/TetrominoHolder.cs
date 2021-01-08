@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿
+using System;
 
 public class TetrominoHolder : TetrominoStorer
 {
 
-    public Tetromino Hold(Tetromino tetromino)
+    public event Action<Tetromino> TetrominoHeld;
+
+    public void Hold(Tetromino tetromino)
     {
-        Tetromino prevHolding = Stored;
-        if (tetromino != null) tetromino.Clear();
-        Stored = tetromino;
-        return prevHolding;
+        Tetromino prevHolding = base.Stored;
+        tetromino?.Clear();
+        base.Stored = tetromino;
+        TetrominoHeld?.Invoke(prevHolding);
     }
 }

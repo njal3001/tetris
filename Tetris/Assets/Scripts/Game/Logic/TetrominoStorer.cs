@@ -3,23 +3,17 @@ using UnityEngine;
 
 public abstract class TetrominoStorer : MonoBehaviour
 {
-
+    [SerializeField]
     private Tetris tetris;
     private Tetromino stored;
 
     public event Action<Tetromino, Tetromino> TetrominoChanged;
 
-
-    //Circular dependecy now, gameStarted event should be moved out to a seperate class....
-    private void Start()
-    {
-        tetris = FindObjectOfType<Tetris>();
-        tetris.GameStarted += Clear;
-    }
+    private void OnEnable() => tetris.GameStarted += Clear;
 
     protected Tetromino Stored
     {
-        get { return stored; }
+        get => stored;
         set
         {
             Tetromino prev = stored;
@@ -28,8 +22,7 @@ public abstract class TetrominoStorer : MonoBehaviour
         }
     }
 
-    protected virtual void Clear()
-    {
-        Stored = null;
-    }
+    protected virtual void Clear() => Stored = null;
+
+    private void OnDisable() => tetris.GameStarted -= Clear;
 }

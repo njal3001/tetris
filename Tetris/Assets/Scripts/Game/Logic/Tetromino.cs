@@ -13,7 +13,6 @@ public abstract class Tetromino : MonoBehaviour
     private TetrisGrid grid;
 
     [SerializeField]
-    private Vector2 spawnPoint;
     private Vector2[] relativePos;
     private Vector2 relativeOrigin;
     private int rotation;   
@@ -71,21 +70,12 @@ public abstract class Tetromino : MonoBehaviour
         return true;
     }
 
-
-    //To be removed....
-    public bool Spawn()
-    {
-        return Spawn(spawnPoint);
-    }
-
     public bool Spawn(Vector2 spawnPoint)
     {
         Vector2[] newPos = Move(relativeSpawnPos, spawnPoint);
 
         foreach (Vector2 point in newPos)
-            if (!grid.VacantPos(point)) return false;
-
-        //TODO: Game breaks if not done in this order, consider changing how the position is stored and changed...
+            if (!grid.Empty(point)) return false;
 
         relativeOrigin = spawnPoint;
         relativePos = relativeSpawnPos;
@@ -112,11 +102,11 @@ public abstract class Tetromino : MonoBehaviour
 
     private void UpdatePos(Vector2[] oldPos, Vector2[] newPos)
     {
-        foreach (Vector2 pos in oldPos)
-            grid.Set(pos, Block.Empty());
+        foreach (Vector2 point in oldPos)
+            grid.Set(point, Block.Empty());
 
-        foreach (Vector2 pos in newPos)
-            grid.Set(pos, block);
+        foreach (Vector2 point in newPos)
+            grid.Set(point, block);
 
         PosChanged?.Invoke(newPos);
     }
@@ -179,8 +169,8 @@ public abstract class Tetromino : MonoBehaviour
 
     public bool OutOfSight()
     {
-        foreach (Vector2 pos in Move(relativePos, relativeOrigin))
-            if (pos.y < grid.HiddenRows)
+        foreach (Vector2 point in Move(relativePos, relativeOrigin))
+            if (point.y < grid.HiddenRows)
                 return true;
 
         return false;

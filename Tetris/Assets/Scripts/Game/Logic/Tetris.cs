@@ -10,27 +10,15 @@ public class Tetris : MonoBehaviour
     [SerializeField]
     private AudioManager audioManager;
 
-    //Should rather have this class handle game states, game started, game over and 
-    [SerializeField]
-    private TetrominoSpawner tetrominoSpawner;
+    //Should rather have this class handle game states, game started, game over....
     [SerializeField]
     private TetrisGridRowClearer gridRowClearer;
 
-    //TO be removed
-    [SerializeField]
-    private TetrominoFall tetrominoFall;
 
     public event Action GameStarted;
+    public event Action TetrominoFinished;
 
-    private void OnEnable()
-    {
-        tetrominoFall.TetrominoFinished2 += OnTetrominoFinished;
-    }
-
-    private void Start()
-    {
-        Initialize();
-    }
+    private void Start() => Initialize();
 
     private void Initialize()
     {
@@ -38,11 +26,12 @@ public class Tetris : MonoBehaviour
 
         audioManager.Play("tetrisSong");
         grid.Clear();
-        tetrominoSpawner.SpawnNextTetromino();
     }
 
-    private void OnTetrominoFinished(Tetromino tetromino)
+    public void TetrominoIsFinished(Tetromino tetromino)
     {
+        TetrominoFinished?.Invoke();
+
         if (tetromino.OutOfSight())
             HandleGameOver();
         else

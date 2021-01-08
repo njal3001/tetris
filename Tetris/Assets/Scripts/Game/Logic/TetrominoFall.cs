@@ -7,7 +7,13 @@ public class TetrominoFall : MonoBehaviour
     private Tetromino tetromino;
 
     [SerializeField]
+    private Tetris tetris;
+
+    [SerializeField]
     private TetrominoSpawner spawner;
+
+    [SerializeField]
+    private TetrominoHolder holder;
 
     [SerializeField]
     private TetrominoFallTimer fallTimer;
@@ -19,18 +25,16 @@ public class TetrominoFall : MonoBehaviour
     private int maxLockDelayRestarts;
     private int lockDelayRestartCounter;
 
-    public event Action TetrominoFinished;
-
-    //To be removed
-    public event Action<Tetromino> TetrominoFinished2;
-
 
     private void OnEnable() 
     {
         spawner.TetrominoSpawned += OnTetrominoSpawned;
+
         fallTimer.Tick += OnFallTimerTick;
         lockDelayTimer.Finished += OnLockDelayFinished;
-        TetrominoFinished += OnTetrominoFinished;
+
+        holder.TetrominoHeld += OnTetrominoHeld;
+        tetris.TetrominoFinished += Reset;
     }
 
     private void OnTetrominoSpawned(Tetromino tetromino)
@@ -46,12 +50,6 @@ public class TetrominoFall : MonoBehaviour
 
     public void SoftDropOn(bool on) => fallTimer.FastTimeOn = on;
 
-    public void HardDrop()
-    {
-        tetromino.HardDrop();
-        TetrominoFinished?.Invoke();
-    }
-
     private void OnFallTimerTick()
     {
         if (tetromino.Move(Vector2.up))
@@ -64,27 +62,30 @@ public class TetrominoFall : MonoBehaviour
             }
         }
         else if (lockDelayFinished)
-            TetrominoFinished?.Invoke();
+            tetris.TetrominoIsFinished(tetromino);
 
         if (!tetromino.CanMove(Vector2.up) && !lockDelayTimer.TimerOn())
             lockDelayTimer.StartTimer();
     }
 
-    private void OnTetrominoFinished()
+    private void OnTetrominoHeld(Tetromino prevT) => Reset();
+
+    private void Reset()
     {
-        tetromino.PosChanged -= OnTetrominoMoved;
+        if (tetromino != null) tetromino.PosChanged -= OnTetrominoMoved;
         fallTimer.StopTimer();
         lockDelayFinished = false;
         lockDelayRestartCounter = 0;
-
-        TetrominoFinished2?.Invoke(tetromino);
     }
 
     private void OnDisable()
     {
         spawner.TetrominoSpawned -= OnTetrominoSpawned;
+
         fallTimer.Tick -= OnFallTimerTick;
         lockDelayTimer.Finished -= OnLockDelayFinished;
-        TetrominoFinished -= OnTetrominoFinished;
+
+        holder.TetrominoHeld -= OnTetrominoHeld;
+        tetris.TetrominoFinished -= Reset;
     }
 }

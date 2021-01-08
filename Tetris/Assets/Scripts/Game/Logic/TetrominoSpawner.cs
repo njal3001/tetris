@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TetrominoSpawner : MonoBehaviour
@@ -9,9 +8,11 @@ public class TetrominoSpawner : MonoBehaviour
     [SerializeField]
     private Vector2 spawnPoint;
 
-    //Quick fix....
     [SerializeField]
     private float spawnDelay;
+
+    [SerializeField]
+    private Tetris tetris;
 
     [SerializeField]
     private TetrominoGenerator tetrominoGenerator;
@@ -26,13 +27,18 @@ public class TetrominoSpawner : MonoBehaviour
 
     private void OnEnable()
     {
+        tetris.GameStarted += SpawnNextTetromino;
         gridRowClearer.TetrominoCanSpawn += SpawnNextTetromino;
-        tetrominoHolder.TetrominoChanged += OnTetrominoSwapped;
+        tetrominoHolder.TetrominoHeld += OnTetrominoHeld;
     }
 
-    public void SpawnNextTetromino() => StartCoroutine(SpawnTetromino(tetrominoGenerator.NextTetromino));
+    public void SpawnNextTetromino()
+    {
+        StartCoroutine(SpawnTetromino(tetrominoGenerator.NextTetromino));
+    }
+
  
-    private void OnTetrominoSwapped(Tetromino prevHolding, Tetromino holding)
+    private void OnTetrominoHeld(Tetromino prevHolding)
     {
         if (prevHolding == null) SpawnNextTetromino();
         else StartCoroutine(SpawnTetromino(prevHolding));
@@ -48,8 +54,9 @@ public class TetrominoSpawner : MonoBehaviour
 
     private void OnDisable()
     {
+        tetris.GameStarted -= SpawnNextTetromino;
         gridRowClearer.TetrominoCanSpawn -= SpawnNextTetromino;
-        tetrominoHolder.TetrominoChanged -= OnTetrominoSwapped;
+        tetrominoHolder.TetrominoHeld -= OnTetrominoHeld;
     }
 
 }

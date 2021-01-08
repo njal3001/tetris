@@ -6,6 +6,8 @@ public class TetrominoInput : MonoBehaviour
 {
 
     [SerializeField]
+    private Tetris tetris;
+    [SerializeField]
     private TetrominoSpawner spawner;
 
     [SerializeField]
@@ -32,7 +34,7 @@ public class TetrominoInput : MonoBehaviour
     [SerializeField]
     private KeyCode holdKey;
     [SerializeField]
-    private TetrominoHolder tetrominoHolder;
+    private TetrominoHolder holder;
     private bool canHold = true;
 
     private Tetromino tetromino;
@@ -40,13 +42,16 @@ public class TetrominoInput : MonoBehaviour
     private void OnEnable()
     {
         spawner.TetrominoSpawned += OnTetrominoSpawned;
-        tetrominoFall.TetrominoFinished += OnTetrominoFinished;
         fastMoveTimer.Tick += OnFastMoveTick;
+        holder.TetrominoHeld += OnTetrominoHeld;
+        tetris.TetrominoFinished += Reset;
     }
 
     private void OnTetrominoSpawned(Tetromino tetromino) => this.tetromino = tetromino;
 
-    private void OnTetrominoFinished()
+    private void OnTetrominoHeld(Tetromino prevT) => tetromino = null;
+
+    private void Reset()
     {
         tetromino = null;
         canHold = true;
@@ -58,14 +63,15 @@ public class TetrominoInput : MonoBehaviour
 
         if (Input.GetKeyDown(holdKey) && canHold)
         {
-            tetrominoHolder.Hold(tetromino);
+            holder.Hold(tetromino);
             canHold = false;
             return;
         }
 
         if (Input.GetKeyDown(hardDropKey))
         {
-            tetrominoFall.HardDrop();
+            tetromino.HardDrop();
+            tetris.TetrominoIsFinished(tetromino);
             return;
         }
 
@@ -121,8 +127,9 @@ public class TetrominoInput : MonoBehaviour
     private void OnDisable()
     {
         spawner.TetrominoSpawned -= OnTetrominoSpawned;
-        tetrominoFall.TetrominoFinished -= OnTetrominoFinished;
         fastMoveTimer.Tick -= OnFastMoveTick;
+        holder.TetrominoHeld -= OnTetrominoHeld;
+        tetris.TetrominoFinished -= Reset;
     }
 
 }

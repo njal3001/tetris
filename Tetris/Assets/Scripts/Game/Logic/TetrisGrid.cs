@@ -43,10 +43,10 @@ public class TetrisGrid : MonoBehaviour
         return fullRows;
     }
 
-    public bool InBounds(Vector2 pos) 
+    public bool InBounds(Vector2 point) 
     {
-        int x = (int)pos.x;
-        int y = (int)pos.y;
+        int x = (int)point.x;
+        int y = (int)point.y;
         return InBounds(x, y);
     }
 
@@ -56,11 +56,11 @@ public class TetrisGrid : MonoBehaviour
         return x >= 0 && y >= 0 && x < length && y < height + hiddenRows;
     }
 
-    public bool VacantPos(Vector2 pos)
+    public bool Empty(Vector2 point)
     {
-        int x = (int)pos.x;
-        int y = (int)pos.y;
-        return InBounds(pos) && !Get(x, y).IsSolid;
+        int x = (int)point.x;
+        int y = (int)point.y;
+        return InBounds(point) && !Get(x, y).IsSolid;
     }
 
     public Block Get(int x, int y)
@@ -68,10 +68,10 @@ public class TetrisGrid : MonoBehaviour
         return InBounds(x, y) ? grid[y, x] : null;
     }
 
-    public Block Get(Vector2 pos)
+    public Block Get(Vector2 point)
     {
-        int x = (int)pos.x;
-        int y = (int)pos.y;
+        int x = (int)point.x;
+        int y = (int)point.y;
 
         return Get(x, y);
     }
@@ -85,10 +85,10 @@ public class TetrisGrid : MonoBehaviour
         GridChanged?.Invoke(x, y, block);
     }
 
-    public void Set(Vector2 pos, Block block)
+    public void Set(Vector2 point, Block block)
     {
-        int x = (int)pos.x; 
-        int y = (int)pos.y;
+        int x = (int)point.x; 
+        int y = (int)point.y;
 
         Set(x, y, block);
     }
