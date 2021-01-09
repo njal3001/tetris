@@ -14,6 +14,9 @@ public class TetrisAudio : MonoBehaviour
     private TetrominoInput tetrominoInput;
 
     [SerializeField]
+    private TetrominoHolder tetrominoHolder;
+
+    [SerializeField]
     private TetrisGridRowClearer rowClearer;
 
     private void OnEnable()
@@ -24,11 +27,14 @@ public class TetrisAudio : MonoBehaviour
 
         tetrominoInput.TetrominoMoved += PlayTetrominoMove;
 
+        tetrominoHolder.TetrominoHeld += PlayTetrominoHold;
+
         rowClearer.RowsCleared += PlayRowsCleared;
     }
 
     private void PlayTetrisSong() => audioManager.Play("tetrisSong");
     private void PlayTetrominoMove() => audioManager.Play("tetrominoMove");
+    private void PlayTetrominoHold(Tetromino tetromino) => audioManager.Play("tetrominoHold");
     private void PlayTetrominoLock() => audioManager.Play("tetrominoLock");
 
     private void PlayRowsCleared(int lines)
@@ -47,6 +53,8 @@ public class TetrisAudio : MonoBehaviour
         tetrisState.GameOver -= PlayGameOver;
 
         tetrominoInput.TetrominoMoved -= PlayTetrominoMove;
+
+        tetrominoHolder.TetrominoHeld -= PlayTetrominoHold;
 
         rowClearer.RowsCleared -= PlayRowsCleared;
     }
