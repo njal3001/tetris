@@ -25,7 +25,7 @@ public class TetrisStats : MonoBehaviour
     [SerializeField]
     private TetrisGridRowClearer gridRowClearer;
     [SerializeField]
-    private Tetris tetris;
+    private TetrisState tetris;
 
     private int Level
     {
@@ -70,12 +70,8 @@ public class TetrisStats : MonoBehaviour
         Lines = 0;
     }
 
-
-    //TODO: Should probably not trigger event if no lines where cleared....
     private void OnRowsCleared(int lines)
     {
-        if (lines <= 0) return;
-
         Lines += lines;
 
         Score += scoreList[Mathf.Min(lines - 1, 3)] * (level + 1);

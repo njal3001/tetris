@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,7 +7,7 @@ public class TetrominoInput : MonoBehaviour
 {
 
     [SerializeField]
-    private Tetris tetris;
+    private TetrisState tetris;
     [SerializeField]
     private TetrominoSpawner spawner;
 
@@ -39,20 +40,29 @@ public class TetrominoInput : MonoBehaviour
 
     private Tetromino tetromino;
 
+    public event Action TetrominoMoved;
+
     private void OnEnable()
     {
         spawner.TetrominoSpawned += OnTetrominoSpawned;
         fastMoveTimer.Tick += OnFastMoveTick;
         holder.TetrominoHeld += OnTetrominoHeld;
-        tetris.TetrominoFinished += Reset;
+        tetris.TetrominoLocked += Reset;
     }
 
-    private void OnTetrominoSpawned(Tetromino tetromino) => this.tetromino = tetromino;
+    private void OnTetrominoSpawned(Tetromino tetromino)
+    {
+        this.tetromino = tetromino;
+        tetromino.PosChanged += OnTetrominoPosChanged;
+    }
+
+    private void OnTetrominoPosChanged(Vector2[] newPos) => TetrominoMoved?.Invoke();
 
     private void OnTetrominoHeld(Tetromino prevT) => tetromino = null;
 
     private void Reset()
     {
+        tetromino.PosChanged -= OnTetrominoPosChanged;
         tetromino = null;
         canHold = true;
         StopFastMove();
@@ -72,7 +82,7 @@ public class TetrominoInput : MonoBehaviour
         if (Input.GetKeyDown(hardDropKey))
         {
             tetromino.HardDrop();
-            tetris.TetrominoIsFinished(tetromino);
+            tetris.TetrominoIsLocked(tetromino);
             return;
         }
 
@@ -137,7 +147,7 @@ public class TetrominoInput : MonoBehaviour
         spawner.TetrominoSpawned -= OnTetrominoSpawned;
         fastMoveTimer.Tick -= OnFastMoveTick;
         holder.TetrominoHeld -= OnTetrominoHeld;
-        tetris.TetrominoFinished -= Reset;
+        tetris.TetrominoLocked -= Reset;
     }
 
 }

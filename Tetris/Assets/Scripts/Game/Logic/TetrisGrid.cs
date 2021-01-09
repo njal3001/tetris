@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class TetrisGrid : MonoBehaviour
 {
+    [SerializeField]
+    private TetrisState tetrisState;
 
     [SerializeField]
     private int length;
@@ -19,11 +21,9 @@ public class TetrisGrid : MonoBehaviour
 
     public event Action<int, int, Block> GridChanged;
 
-    public void Start()
-    {
-        grid = new Block[height + hiddenRows, length];
-        Clear();
-    }
+    private void OnEnable() => tetrisState.GameStarted += Clear;
+
+    public void Awake() => grid = new Block[height + hiddenRows, length];
 
     public List<int> FullRows()
     {
@@ -93,10 +93,12 @@ public class TetrisGrid : MonoBehaviour
         Set(x, y, block);
     }
 
-    public void Clear()
+    private void Clear()
     {
         for (int y = 0; y < height + hiddenRows; y++)
             for (int x = 0; x < length; x++)
                 Set(x, y, Block.Empty());
     }
+
+    private void OnDisable() => tetrisState.GameStarted -= Clear;
 }

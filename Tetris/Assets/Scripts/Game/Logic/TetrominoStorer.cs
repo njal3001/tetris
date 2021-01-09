@@ -4,7 +4,7 @@ using UnityEngine;
 public abstract class TetrominoStorer : MonoBehaviour
 {
     [SerializeField]
-    private Tetris tetris;
+    private TetrisState tetris;
     private Tetromino stored;
 
     public event Action<Tetromino, Tetromino> TetrominoChanged;

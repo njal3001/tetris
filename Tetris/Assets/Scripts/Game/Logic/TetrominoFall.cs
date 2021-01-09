@@ -7,7 +7,7 @@ public class TetrominoFall : MonoBehaviour
     private Tetromino tetromino;
 
     [SerializeField]
-    private Tetris tetris;
+    private TetrisState tetris;
 
     [SerializeField]
     private TetrominoSpawner spawner;
@@ -36,7 +36,7 @@ public class TetrominoFall : MonoBehaviour
         lockDelayTimer.Finished += OnLockDelayFinished;
 
         holder.TetrominoHeld += OnTetrominoHeld;
-        tetris.TetrominoFinished += Reset;
+        tetris.TetrominoLocked += Reset;
     }
 
     private void OnTetrominoSpawned(Tetromino tetromino)
@@ -64,7 +64,7 @@ public class TetrominoFall : MonoBehaviour
             }
         }
         else if (lockDelayFinished)
-            tetris.TetrominoIsFinished(tetromino);
+            tetris.TetrominoIsLocked(tetromino);
 
         if (!tetromino.CanMove(Vector2.up) && !lockDelayTimer.TimerOn())
             lockDelayTimer.StartTimer();
@@ -88,6 +88,6 @@ public class TetrominoFall : MonoBehaviour
         lockDelayTimer.Finished -= OnLockDelayFinished;
 
         holder.TetrominoHeld -= OnTetrominoHeld;
-        tetris.TetrominoFinished -= Reset;
+        tetris.TetrominoLocked -= Reset;
     }
 }

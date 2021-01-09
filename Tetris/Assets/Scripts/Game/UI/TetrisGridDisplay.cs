@@ -24,16 +24,9 @@ public class TetrisGridDisplay : MonoBehaviour
     [SerializeField]
     private Sprite noBlockSprite;
 
-    private void OnEnable()
-    {
-        tetrisGrid.GridChanged += OnGridChanged;
-    }
+    private void OnEnable() => tetrisGrid.GridChanged += OnGridChanged;
 
-
-    private void Start()
-    {
-        CreateDisplay();
-    }
+    private void Awake() => CreateDisplay();
 
     public void CreateDisplay()
     {
@@ -88,7 +81,6 @@ public class TetrisGridDisplay : MonoBehaviour
     {
         if (OutOfBounds(x, y)) return;
 
-
         blockDict[gridDisplay[y, x]].sprite = sprite;
 
     }
@@ -115,9 +107,6 @@ public class TetrisGridDisplay : MonoBehaviour
         }
     }
 
-    private void OnDisable()
-    {
-        tetrisGrid.GridChanged -= OnGridChanged;
-    }
+    private void OnDisable() => tetrisGrid.GridChanged -= OnGridChanged;
 
 }

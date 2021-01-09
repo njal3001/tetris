@@ -6,6 +6,9 @@ using UnityEngine;
 public class TetrisGridRowClearer : MonoBehaviour
 {
     [SerializeField]
+    private TetrisState tetrisState;
+
+    [SerializeField]
     private TetrisGrid grid;
 
     [SerializeField]
@@ -13,22 +16,22 @@ public class TetrisGridRowClearer : MonoBehaviour
 
     public event Action <int>RowsCleared;
 
-    //rename?..
-    public event Action TetrominoCanSpawn;
+    public event Action RowClearingFinished;
 
-    public int ClearFullRows()
+    private void OnEnable() => tetrisState.TetrominoLockedInBounds += ClearFullRows;
+
+    public void ClearFullRows()
     {
         List<int> fullRows = grid.FullRows();
- 
+        
         if (fullRows.Count == 0)
         {
-            TetrominoCanSpawn?.Invoke();
-            return 0;
+            RowClearingFinished?.Invoke();
+            return;
         }
 
         RowsCleared?.Invoke(fullRows.Count);
         StartCoroutine(ClearFullRows(grid.FullRows()));
-        return fullRows.Count;
     }
 
     private IEnumerator ClearFullRows(List<int> fullRows)
@@ -54,7 +57,7 @@ public class TetrisGridRowClearer : MonoBehaviour
             for (int j = y - 1; j >= 0; j--)
                 MoveRowDown(j);
 
-        TetrominoCanSpawn?.Invoke();
+        RowClearingFinished?.Invoke();
     }
     private void MoveRowDown(int y)
     {
@@ -66,5 +69,6 @@ public class TetrisGridRowClearer : MonoBehaviour
         }
     }
 
+    private void OnDisable() => tetrisState.TetrominoLockedInBounds -= ClearFullRows;
 
 }

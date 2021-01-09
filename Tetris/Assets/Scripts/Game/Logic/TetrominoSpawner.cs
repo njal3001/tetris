@@ -22,7 +22,7 @@ public class TetrominoSpawner : MonoBehaviour
     private void OnEnable()
     {
         tetrominoGenerator.Cleared += SpawnNextTetromino;
-        gridRowClearer.TetrominoCanSpawn += SpawnNextTetromino;
+        gridRowClearer.RowClearingFinished += SpawnNextTetromino;
         tetrominoHolder.TetrominoHeld += OnTetrominoHeld;
     }
 
@@ -46,7 +46,7 @@ public class TetrominoSpawner : MonoBehaviour
     private void OnDisable()
     {
         tetrominoGenerator.Cleared -= SpawnNextTetromino;
-        gridRowClearer.TetrominoCanSpawn -= SpawnNextTetromino;
+        gridRowClearer.RowClearingFinished -= SpawnNextTetromino;
         tetrominoHolder.TetrominoHeld -= OnTetrominoHeld;
     }
 
