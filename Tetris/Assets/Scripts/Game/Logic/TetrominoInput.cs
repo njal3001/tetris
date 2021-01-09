@@ -55,6 +55,7 @@ public class TetrominoInput : MonoBehaviour
     {
         tetromino = null;
         canHold = true;
+        StopFastMove();
     }
 
     private void Update()
@@ -110,8 +111,7 @@ public class TetrominoInput : MonoBehaviour
         }
         else
         {
-            fastMoveTimer.StopTimer();
-            fastMoveTicked = false;
+            StopFastMove();
 
             if (moveInput != 0)
                 MoveTetromino(moveInput);
@@ -122,7 +122,15 @@ public class TetrominoInput : MonoBehaviour
 
     private void MoveTetromino(int moveInput) => tetromino.Move(new Vector2(moveInput, 0));
 
-    private void OnFastMoveTick()  => fastMoveTicked = true; 
+    private void OnFastMoveTick() => fastMoveTicked = true;
+
+    private void StopFastMove()
+    {
+        if (fastMoveTimer.PreTimerStarted)
+            fastMoveTimer.StopTimer();
+
+        fastMoveTicked = false;
+    }
 
     private void OnDisable()
     {

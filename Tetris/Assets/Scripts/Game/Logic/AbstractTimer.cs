@@ -28,7 +28,7 @@ public abstract class AbstractTimer : MonoBehaviour
         TimerOn = false;
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         if (TimerOn)
         {

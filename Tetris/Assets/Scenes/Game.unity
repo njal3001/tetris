@@ -18652,8 +18652,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnPoint: {x: 3, y: 0}
-  spawnDelay: 0
-  tetris: {fileID: 1092619339}
   tetrominoGenerator: {fileID: 357991005}
   tetrominoHolder: {fileID: 1415378631}
   gridRowClearer: {fileID: 1815872813}
@@ -23711,7 +23709,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90a2c8137185dea49a07fba38002d276, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 10
+  time: 3
 --- !u!114 &1199410358
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23724,7 +23722,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90a2c8137185dea49a07fba38002d276, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 0.75
+  time: 0.5
 --- !u!1 &1207964348
 GameObject:
   m_ObjectHideFlags: 0
@@ -30176,7 +30174,7 @@ MonoBehaviour:
   holder: {fileID: 1415378631}
   fallTimer: {fileID: 1752378589}
   lockDelayTimer: {fileID: 1199410356}
-  maxLockDelayRestarts: 2
+  maxLockDelayRestarts: 0
 --- !u!1 &1676548008
 GameObject:
   m_ObjectHideFlags: 0

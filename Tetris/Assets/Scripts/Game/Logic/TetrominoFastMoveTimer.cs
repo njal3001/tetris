@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TetrominoFastMoveTimer : AbstractTimer
@@ -10,6 +9,8 @@ public class TetrominoFastMoveTimer : AbstractTimer
     [SerializeField]
     private float startFastMoveTime;
 
+    private Coroutine currCoroutine;
+
     protected override float GetTime()
     {
         return fastMoveTime;
@@ -17,8 +18,8 @@ public class TetrominoFastMoveTimer : AbstractTimer
 
     public override void StartTimer()
     {
-        StartCoroutine(InvokeTimer());
         PreTimerStarted = true;
+        currCoroutine = StartCoroutine(InvokeTimer());
     }
 
     private IEnumerator InvokeTimer()
@@ -36,8 +37,8 @@ public class TetrominoFastMoveTimer : AbstractTimer
 
     public override void StopTimer()
     {
-        StopCoroutine(InvokeTimer());
-        PreTimerStarted = false;
         base.StopTimer();
+        StopCoroutine(currCoroutine);
+        PreTimerStarted = false;
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,6 +10,8 @@ public class TetrominoGenerator : TetrominoStorer
     private Tetromino[] tetrominos;
 
     private List<Tetromino> nextTetrominos = new List<Tetromino>();
+
+    public event Action Cleared;
 
     public Tetromino NextTetromino
     {
@@ -25,7 +28,7 @@ public class TetrominoGenerator : TetrominoStorer
         if (nextTetrominos.Count == 0)
             nextTetrominos.AddRange(tetrominos);
 
-        Stored = nextTetrominos[Random.Range(0, nextTetrominos.Count)];
+        Stored = nextTetrominos[UnityEngine.Random.Range(0, nextTetrominos.Count)];
         nextTetrominos.Remove(Stored);
     }
 
@@ -34,6 +37,7 @@ public class TetrominoGenerator : TetrominoStorer
         nextTetrominos.Clear();
         base.Clear();
         UpdateNextTetromino();
+        Cleared?.Invoke();
     }
 
 }

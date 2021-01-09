@@ -23,6 +23,8 @@ public class TetrominoFall : MonoBehaviour
     private bool lockDelayFinished;
     [SerializeField]
     private int maxLockDelayRestarts;
+
+    //Might do this differently
     private int lockDelayRestartCounter;
 
 
