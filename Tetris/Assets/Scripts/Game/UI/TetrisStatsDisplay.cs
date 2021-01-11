@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
 public class TetrisStatsDisplay : MonoBehaviour
@@ -9,9 +7,12 @@ public class TetrisStatsDisplay : MonoBehaviour
     [SerializeField]
     private TetrisStats tetrisStats;
 
-    public TextMeshProUGUI scoreText;
-    public TextMeshProUGUI linesText;
-    public TextMeshProUGUI levelText;
+    [SerializeField]
+    private TextMeshProUGUI scoreText;
+    [SerializeField]
+    private TextMeshProUGUI linesText;
+    [SerializeField]
+    private TextMeshProUGUI levelText;
 
     private void OnEnable()
     {
@@ -20,20 +21,12 @@ public class TetrisStatsDisplay : MonoBehaviour
         tetrisStats.LevelChanged += UpdateLevelText;
     }
 
-    private void UpdateScoreText(float score)
-    {
-        scoreText.text = score.ToString();
-    }
+    private void UpdateScoreText(float score) => scoreText.text = score.ToString();
 
-    private void UpdateLinesText(int lines)
-    {
-        linesText.text = lines.ToString();
-    }
+    private void UpdateLinesText(int lines) => linesText.text = lines.ToString();
 
-    private void UpdateLevelText(int level)
-    {
-        levelText.text = level.ToString();
-    }
+    private void UpdateLevelText(int level) => levelText.text = level.ToString();
+
 
     private void OnDisable()
     {

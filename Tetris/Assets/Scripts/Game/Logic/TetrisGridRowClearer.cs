@@ -18,7 +18,7 @@ public class TetrisGridRowClearer : MonoBehaviour
 
     public event Action RowClearingFinished;
 
-    private void OnEnable() => tetrisState.TetrominoLockedInBounds += ClearFullRows;
+    private void OnEnable() => tetrisState.OnTetrominoLockedInBounds += ClearFullRows;
 
     public void ClearFullRows()
     {
@@ -69,6 +69,6 @@ public class TetrisGridRowClearer : MonoBehaviour
         }
     }
 
-    private void OnDisable() => tetrisState.TetrominoLockedInBounds -= ClearFullRows;
+    private void OnDisable() => tetrisState.OnTetrominoLockedInBounds -= ClearFullRows;
 
 }

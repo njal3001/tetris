@@ -2,7 +2,6 @@
 
 public class TetrisAudio : MonoBehaviour
 {
-    //Subject to change, might just remove the audioManager class...
 
     [SerializeField]
     private AudioManager audioManager;
@@ -19,11 +18,14 @@ public class TetrisAudio : MonoBehaviour
     [SerializeField]
     private TetrisGridRowClearer rowClearer;
 
+    [SerializeField]
+    private float tetrisSongFadeInTime;
+
     private void OnEnable()
     {
-        tetrisState.GameStarted += PlayTetrisSong;
-        tetrisState.TetrominoLockedInBounds += PlayTetrominoLock;
-        tetrisState.GameOver += PlayGameOver;
+        tetrisState.OnGameStarted += PlayTetrisSong;
+        tetrisState.OnTetrominoLockedInBounds += PlayTetrominoLock;
+        tetrisState.OnGameOver += OnGameOver;
 
         tetrominoInput.TetrominoMoved += PlayTetrominoMove;
 
@@ -32,7 +34,7 @@ public class TetrisAudio : MonoBehaviour
         rowClearer.RowsCleared += PlayRowsCleared;
     }
 
-    private void PlayTetrisSong() => audioManager.Play("tetrisSong");
+    private void PlayTetrisSong() => audioManager.Play("tetrisSong", tetrisSongFadeInTime);
     private void PlayTetrominoMove() => audioManager.Play("tetrominoMove");
     private void PlayTetrominoHold(Tetromino tetromino) => audioManager.Play("tetrominoHold");
     private void PlayTetrominoLock() => audioManager.Play("tetrominoLock");
@@ -43,14 +45,18 @@ public class TetrisAudio : MonoBehaviour
         else audioManager.Play("rowClear");
     }
 
-    private void PlayGameOver() => audioManager.Play("gameOver");
+    private void OnGameOver()
+    {
+        audioManager.Play("gameOver");
+        audioManager.Stop("tetrisSong");
+    }
 
 
     private void OnDisable()
     {
-        tetrisState.GameStarted -= PlayTetrisSong;
-        tetrisState.TetrominoLockedInBounds -= PlayTetrominoLock;
-        tetrisState.GameOver -= PlayGameOver;
+        tetrisState.OnGameStarted -= PlayTetrisSong;
+        tetrisState.OnTetrominoLockedInBounds -= PlayTetrominoLock;
+        tetrisState.OnGameOver -= OnGameOver;
 
         tetrominoInput.TetrominoMoved -= PlayTetrominoMove;
 

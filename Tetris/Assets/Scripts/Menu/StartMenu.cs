@@ -1,15 +1,25 @@
 ﻿using UnityEngine;
 
-public class StartMenu : MonoBehaviour
+public class StartMenu : Menu
 {
-
     [SerializeField]
-    private TetrisState tetrisState;
+    private GameObject playingDisplay;
 
-    public void PlayGame()
+    //private void OnEnable() => tetrisState.OnGameOver += Show;
+
+    private void Start() => tetrisState.Clear();
+
+    public override void Show()
     {
-        transform.GetChild(0).gameObject.SetActive(false);
-        tetrisState.StartGame();
+        tetrisState.Clear();
+        base.Show();
+        SetActive(false, playingDisplay);
+    }
+
+    public override void Hide()
+    {
+        base.Hide();
+        SetActive(true, playingDisplay);
     }
 
     public void QuitGame()
@@ -17,4 +27,6 @@ public class StartMenu : MonoBehaviour
         Debug.Log("QUIT");
         Application.Quit();
     }
+
+    //private void OnDisable() => tetrisState.OnGameOver -= Show;
 }

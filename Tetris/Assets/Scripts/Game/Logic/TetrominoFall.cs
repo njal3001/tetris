@@ -36,7 +36,7 @@ public class TetrominoFall : MonoBehaviour
         lockDelayTimer.Finished += OnLockDelayFinished;
 
         holder.TetrominoHeld += OnTetrominoHeld;
-        tetris.TetrominoLocked += Reset;
+        tetris.OnTetrominoLocked += Reset;
     }
 
     private void OnTetrominoSpawned(Tetromino tetromino)
@@ -64,7 +64,7 @@ public class TetrominoFall : MonoBehaviour
             }
         }
         else if (lockDelayFinished)
-            tetris.TetrominoIsLocked(tetromino);
+            tetris.TetrominoLocked(tetromino);
 
         if (!tetromino.CanMove(Vector2.up) && !lockDelayTimer.TimerOn())
             lockDelayTimer.StartTimer();
@@ -88,6 +88,6 @@ public class TetrominoFall : MonoBehaviour
         lockDelayTimer.Finished -= OnLockDelayFinished;
 
         holder.TetrominoHeld -= OnTetrominoHeld;
-        tetris.TetrominoLocked -= Reset;
+        tetris.OnTetrominoLocked -= Reset;
     }
 }

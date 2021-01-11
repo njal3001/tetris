@@ -1,10 +1,12 @@
 ﻿using UnityEngine.Audio;
 using System;
 using UnityEngine;
+using System.Collections;
 
 public class AudioManager : MonoBehaviour
 {
-    public Sound[] sounds;
+    [SerializeField]
+    private Sound[] sounds;
 
     private void Awake()
     {
@@ -19,7 +21,16 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void Play(string name)
+    private delegate void SoundDelegate(Sound sound);
+
+    public void Play(string name) => Execute(name, (sound) => sound.AudioSource.Play());
+
+    public void Play(string name, float fadeInTime) => Execute(name, (sound) => StartCoroutine(FadeIn(sound, fadeInTime)));
+
+    public void Stop(string name) => Execute(name, (sound) => sound.AudioSource.Stop());
+
+
+    private void Execute(string name, SoundDelegate soundDelegate)
     {
         Sound sound = Array.Find(sounds, s => s.name == name);
 
@@ -29,7 +40,24 @@ public class AudioManager : MonoBehaviour
             return;
         }
 
+        soundDelegate.Invoke(sound);
+    }
+
+    private IEnumerator FadeIn(Sound sound, float duration)
+    {
         sound.AudioSource.Play();
+
+        float currentTime = 0;
+
+        while (currentTime < duration)
+        {
+            currentTime += Time.deltaTime;
+            sound.AudioSource.volume = Mathf.Lerp(0, sound.volume, currentTime / duration);
+
+            yield return null;
+        }
+
+        sound.AudioSource.volume = sound.volume;
     }
 
 }

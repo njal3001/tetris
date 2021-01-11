@@ -4,12 +4,12 @@ using UnityEngine;
 public abstract class TetrominoStorer : MonoBehaviour
 {
     [SerializeField]
-    private TetrisState tetris;
+    protected TetrisState tetrisState;
     private Tetromino stored;
 
     public event Action<Tetromino, Tetromino> TetrominoChanged;
 
-    private void OnEnable() => tetris.GameStarted += Clear;
+    protected virtual void OnEnable() => tetrisState.OnClear += Clear;
 
     protected Tetromino Stored
     {
@@ -22,7 +22,7 @@ public abstract class TetrominoStorer : MonoBehaviour
         }
     }
 
-    protected virtual void Clear() => Stored = null;
+    protected void Clear() => Stored = null;
 
-    private void OnDisable() => tetris.GameStarted -= Clear;
+    protected virtual void OnDisable() => tetrisState.OnClear -= Clear;
 }

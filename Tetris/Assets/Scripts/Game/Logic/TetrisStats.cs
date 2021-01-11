@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TetrisStats : MonoBehaviour
@@ -59,7 +57,7 @@ public class TetrisStats : MonoBehaviour
 
     private void OnEnable()
     {
-        tetris.GameStarted += Reset;
+        tetris.OnGameStarted += Reset;
         gridRowClearer.RowsCleared += OnRowsCleared;
     }
 
@@ -84,7 +82,7 @@ public class TetrisStats : MonoBehaviour
 
     private void OnDisable()
     {
-        tetris.GameStarted -= Reset;
+        tetris.OnGameStarted -= Reset;
         gridRowClearer.RowsCleared -= OnRowsCleared;
     }
 }

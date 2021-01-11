@@ -9,19 +9,22 @@ public class TetrisGrid : MonoBehaviour
 
     [SerializeField]
     private int length;
-    public int Length { get => length; }
+    public int Length => length;
     [SerializeField]
     private int height;
-    public int Height { get => height; }
+    public int Height => height;
     [SerializeField]
     private int hiddenRows;
-    public int HiddenRows { get => hiddenRows; }
+    public int HiddenRows => hiddenRows;
 
     private Block[,] grid;
 
     public event Action<int, int, Block> GridChanged;
 
-    private void OnEnable() => tetrisState.GameStarted += Clear;
+    private void OnEnable()
+    {
+        tetrisState.OnClear += Clear;
+    }
 
     public void Awake() => grid = new Block[height + hiddenRows, length];
 
@@ -100,5 +103,5 @@ public class TetrisGrid : MonoBehaviour
                 Set(x, y, Block.Empty());
     }
 
-    private void OnDisable() => tetrisState.GameStarted -= Clear;
+    private void OnDisable() => tetrisState.OnClear -= Clear;
 }

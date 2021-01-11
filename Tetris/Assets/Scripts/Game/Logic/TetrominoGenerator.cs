@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,7 +10,13 @@ public class TetrominoGenerator : TetrominoStorer
 
     private List<Tetromino> nextTetrominos = new List<Tetromino>();
 
-    public event Action Cleared;
+    public event Action Initialized;
+
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        tetrisState.OnGameStarted += Initialize;
+    }
 
     public Tetromino NextTetromino
     {
@@ -32,12 +37,17 @@ public class TetrominoGenerator : TetrominoStorer
         nextTetrominos.Remove(Stored);
     }
 
-    protected override void Clear()
+    private void Initialize()
     {
         nextTetrominos.Clear();
-        base.Clear();
         UpdateNextTetromino();
-        Cleared?.Invoke();
+        Initialized?.Invoke();
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        tetrisState.OnGameStarted -= Initialize;
     }
 
 }
