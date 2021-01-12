@@ -9,7 +9,6 @@ public class TetrisStats : MonoBehaviour
     [SerializeField]
     private float[] scoreList = new float[4];
 
-    [SerializeField]
     private int startingLevel;
     private int level;
     public event Action<int> LevelChanged;
@@ -24,6 +23,15 @@ public class TetrisStats : MonoBehaviour
     private TetrisGridRowClearer gridRowClearer;
     [SerializeField]
     private TetrisState tetris;
+
+    public int StartingLevel
+    {
+        get => startingLevel;
+        set
+        {
+            startingLevel = Mathf.Max(value, 0);
+        }
+    }
 
     private int Level
     {
