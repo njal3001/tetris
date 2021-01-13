@@ -47,8 +47,8 @@ public class TetrominoInput : MonoBehaviour
         spawner.TetrominoSpawned += OnTetrominoSpawned;
         fastMoveTimer.Tick += OnFastMoveTick;
         holder.TetrominoHeld += OnTetrominoHeld;
-        tetrisState.OnTetrominoLocked += Reset;
-        tetrisState.OnClear += Reset;
+        tetrisState.OnTetrominoLocked += OnTetrominoLocked;
+        tetrisState.OnClear += OnTetrominoLocked;
     }
 
     private void OnTetrominoSpawned(Tetromino tetromino)
@@ -59,13 +59,18 @@ public class TetrominoInput : MonoBehaviour
 
     private void OnTetrominoPosChanged(Vector2[] newPos) => TetrominoMoved?.Invoke();
 
-    private void OnTetrominoHeld(Tetromino prevT) => tetromino = null;
+    private void OnTetrominoHeld(Tetromino prevT) => Reset();
+
+    private void OnTetrominoLocked()
+    {
+        Reset();
+        canHold = true;
+    }
 
     private void Reset()
     {
         if (tetromino != null) tetromino.PosChanged -= OnTetrominoPosChanged;
         tetromino = null;
-        canHold = true;
         StopFastMove();
     }
 
@@ -148,8 +153,8 @@ public class TetrominoInput : MonoBehaviour
         spawner.TetrominoSpawned -= OnTetrominoSpawned;
         fastMoveTimer.Tick -= OnFastMoveTick;
         holder.TetrominoHeld -= OnTetrominoHeld;
-        tetrisState.OnTetrominoLocked -= Reset;
-        tetrisState.OnClear -= Reset;
+        tetrisState.OnTetrominoLocked -= OnTetrominoLocked;
+        tetrisState.OnClear -= OnTetrominoLocked;
     }
 
 }
