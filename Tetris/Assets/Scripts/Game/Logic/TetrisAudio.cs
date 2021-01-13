@@ -23,8 +23,10 @@ public class TetrisAudio : MonoBehaviour
 
     private void OnEnable()
     {
+        tetrisState.OnClear += StopTetrisSong;
         tetrisState.OnGameStarted += PlayTetrisSong;
         tetrisState.OnTetrominoLockedInBounds += PlayTetrominoLock;
+        tetrisState.OnPauseChanged += OnPauseChanged;
         tetrisState.OnGameOver += OnGameOver;
 
         tetrominoInput.TetrominoMoved += PlayTetrominoMove;
@@ -45,17 +47,28 @@ public class TetrisAudio : MonoBehaviour
         else audioManager.Play("rowClear");
     }
 
+    private void OnPauseChanged(bool paused)
+    {
+        if (paused) audioManager.Pause("tetrisSong");
+        else audioManager.Play("tetrisSong");
+    }
+
+    private void StopTetrisSong() => audioManager.Stop("tetrisSong");
+
+
     private void OnGameOver()
     {
+        StopTetrisSong();
         audioManager.Play("gameOver");
-        audioManager.Stop("tetrisSong");
     }
 
 
     private void OnDisable()
     {
+        tetrisState.OnClear -= StopTetrisSong;
         tetrisState.OnGameStarted -= PlayTetrisSong;
         tetrisState.OnTetrominoLockedInBounds -= PlayTetrominoLock;
+        tetrisState.OnPauseChanged -= OnPauseChanged;
         tetrisState.OnGameOver -= OnGameOver;
 
         tetrominoInput.TetrominoMoved -= PlayTetrominoMove;

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GameOverMenu : Menu
 {
@@ -16,11 +14,7 @@ public class GameOverMenu : Menu
         base.PlayGame();
     }
 
-    public void GoToMenu()
-    {
-        base.Hide();
-        startMenu.Show();
-    }
+    public void GoToStartMenu() => base.GoToMenu(startMenu);
 
     private void OnDisable() => tetrisState.OnGameOver -= base.Show;
 }

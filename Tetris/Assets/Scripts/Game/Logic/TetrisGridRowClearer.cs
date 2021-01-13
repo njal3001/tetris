@@ -50,7 +50,8 @@ public class TetrisGridRowClearer : MonoBehaviour
                 grid.Set(left, y, Block.Empty());
                 grid.Set(right, y, Block.Empty());
             }
-            yield return new WaitForSeconds(clearIntervalTime);
+
+            yield return new PausableWaitForSeconds(clearIntervalTime, tetrisState);
         }
 
         foreach (int y in fullRows)

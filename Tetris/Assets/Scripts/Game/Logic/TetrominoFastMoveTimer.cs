@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class TetrominoFastMoveTimer : AbstractTimer
 {
+    [SerializeField]
+    private TetrisState tetrisState;
 
     [SerializeField]
     private float fastMoveTime;
@@ -24,7 +26,7 @@ public class TetrominoFastMoveTimer : AbstractTimer
 
     private IEnumerator InvokeTimer()
     {
-        yield return new WaitForSeconds(startFastMoveTime);
+        yield return new PausableWaitForSeconds(startFastMoveTime, tetrisState);
 
         base.StartTimer();
     }

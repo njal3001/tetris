@@ -5,8 +5,6 @@ public class StartMenu : Menu
     [SerializeField]
     private GameObject playingDisplay;
 
-    //private void OnEnable() => tetrisState.OnGameOver += Show;
-
     private void Start() => tetrisState.Clear();
 
     public override void Show()
@@ -28,5 +26,4 @@ public class StartMenu : Menu
         Application.Quit();
     }
 
-    //private void OnDisable() => tetrisState.OnGameOver -= Show;
 }

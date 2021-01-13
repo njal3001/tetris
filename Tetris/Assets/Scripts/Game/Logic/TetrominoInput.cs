@@ -7,7 +7,7 @@ public class TetrominoInput : MonoBehaviour
 {
 
     [SerializeField]
-    private TetrisState tetris;
+    private TetrisState tetrisState;
     [SerializeField]
     private TetrominoSpawner spawner;
 
@@ -47,7 +47,8 @@ public class TetrominoInput : MonoBehaviour
         spawner.TetrominoSpawned += OnTetrominoSpawned;
         fastMoveTimer.Tick += OnFastMoveTick;
         holder.TetrominoHeld += OnTetrominoHeld;
-        tetris.OnTetrominoLocked += Reset;
+        tetrisState.OnTetrominoLocked += Reset;
+        tetrisState.OnClear += Reset;
     }
 
     private void OnTetrominoSpawned(Tetromino tetromino)
@@ -62,7 +63,7 @@ public class TetrominoInput : MonoBehaviour
 
     private void Reset()
     {
-        tetromino.PosChanged -= OnTetrominoPosChanged;
+        if (tetromino != null) tetromino.PosChanged -= OnTetrominoPosChanged;
         tetromino = null;
         canHold = true;
         StopFastMove();
@@ -82,7 +83,7 @@ public class TetrominoInput : MonoBehaviour
         if (Input.GetKeyDown(hardDropKey))
         {
             tetromino.HardDrop();
-            tetris.TetrominoLocked(tetromino);
+            tetrisState.TetrominoLocked(tetromino);
             return;
         }
 
@@ -147,7 +148,8 @@ public class TetrominoInput : MonoBehaviour
         spawner.TetrominoSpawned -= OnTetrominoSpawned;
         fastMoveTimer.Tick -= OnFastMoveTick;
         holder.TetrominoHeld -= OnTetrominoHeld;
-        tetris.OnTetrominoLocked -= Reset;
+        tetrisState.OnTetrominoLocked -= Reset;
+        tetrisState.OnClear -= Reset;
     }
 
 }

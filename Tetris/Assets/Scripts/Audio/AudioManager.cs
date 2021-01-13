@@ -27,6 +27,8 @@ public class AudioManager : MonoBehaviour
 
     public void Play(string name, float fadeInTime) => Execute(name, (sound) => StartCoroutine(FadeIn(sound, fadeInTime)));
 
+    public void Pause(string name) => Execute(name, (sound) => sound.AudioSource.Pause());
+
     public void Stop(string name) => Execute(name, (sound) => sound.AudioSource.Stop());
 
 

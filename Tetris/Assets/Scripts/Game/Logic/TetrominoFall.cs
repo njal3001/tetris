@@ -37,6 +37,7 @@ public class TetrominoFall : MonoBehaviour
 
         holder.TetrominoHeld += OnTetrominoHeld;
         tetris.OnTetrominoLocked += Reset;
+        tetris.OnClear += Reset;
     }
 
     private void OnTetrominoSpawned(Tetromino tetromino)
@@ -89,5 +90,6 @@ public class TetrominoFall : MonoBehaviour
 
         holder.TetrominoHeld -= OnTetrominoHeld;
         tetris.OnTetrominoLocked -= Reset;
+        tetris.OnClear += Reset;
     }
 }
